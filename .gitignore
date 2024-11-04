@@ -1,0 +1,54 @@
+# Ignore build and dist directories
+/build/
+/dist/
+
+# NetBeans specific files
+nbproject/private/
+nbproject/nbproject.xml
+nbproject/genfiles.properties
+nbproject/project.properties
+nbproject/project.xml
+
+# Ignore compiled Java classes and dependency files
+*.class
+*.jar
+*.war
+
+# Logs
+*.log
+
+# IDE-specific settings (e.g., NetBeans, IntelliJ, Eclipse)
+*.iml
+.idea/
+.DS_Store
+
+# OS-specific files
+Thumbs.db
+*.swp
+
+# Maven-specific directories (if using Maven)
+target/
+dependency-reduced-pom.xml
+release.properties
+
+# Temporary files
+*.tmp
+*.bak
+*.backup
+*.orig
+*.rej
+*.swo
+
+# JetBrains IDEs (e.g., IntelliJ) settings
+*.ipr
+*.iws
+
+# Ignore MacOS specific files
+.DS_Store
+._*
+.Spotlight-V100
+.Trashes
+
+# Ignore Windows specific files
+Thumbs.db
+ehthumbs.db
