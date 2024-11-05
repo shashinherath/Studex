@@ -6,8 +6,7 @@
 nbproject/private/
 nbproject/nbproject.xml
 nbproject/genfiles.properties
-nbproject/project.properties
-nbproject/project.xml
+
 
 # Ignore compiled Java classes and dependency files
 *.class
@@ -26,11 +25,6 @@ nbproject/project.xml
 Thumbs.db
 *.swp
 
-# Maven-specific directories (if using Maven)
-target/
-dependency-reduced-pom.xml
-release.properties
-
 # Temporary files
 *.tmp
 *.bak
@@ -38,10 +32,6 @@ release.properties
 *.orig
 *.rej
 *.swo
-
-# JetBrains IDEs (e.g., IntelliJ) settings
-*.ipr
-*.iws
 
 # Ignore MacOS specific files
 .DS_Store
