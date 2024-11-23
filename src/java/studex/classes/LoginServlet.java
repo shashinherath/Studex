@@ -31,7 +31,7 @@ public class LoginServlet extends HttpServlet {
             response.sendRedirect("admin-home.html");
         } else {
             // If there is an error (invalid credentials), forward back to login page
-            RequestDispatcher dispatcher = request.getRequestDispatcher("login.jsp");
+            RequestDispatcher dispatcher = request.getRequestDispatcher("index.html");
             dispatcher.forward(request, response);
         }
     }
