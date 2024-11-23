@@ -1,44 +1,38 @@
-# Ignore build and dist directories
-/build/
-/dist/
-
-# NetBeans specific files
+# NetBeans files
 nbproject/private/
-nbproject/nbproject.xml
-nbproject/genfiles.properties
+nbproject/build-impl.xml
 
-
-# Ignore compiled Java classes and dependency files
+# Build files
+build/
+build.xml
 *.class
-*.jar
-*.war
 
 # Logs
 *.log
 
-# IDE-specific settings (e.g., NetBeans, IntelliJ, Eclipse)
-*.iml
-.idea/
+# System files
 .DS_Store
-
-# OS-specific files
 Thumbs.db
-*.swp
 
 # Temporary files
 *.tmp
 *.bak
-*.backup
-*.orig
-*.rej
-*.swo
+*.swp
 
-# Ignore MacOS specific files
-.DS_Store
-._*
-.Spotlight-V100
-.Trashes
+# IntelliJ IDEA files (if used)
+.idea/
+*.iml
 
-# Ignore Windows specific files
-Thumbs.db
-ehthumbs.db
+# Eclipse files (if the project is opened in Eclipse too)
+.project
+.classpath
+.settings/
+
+# Maven/Gradle files (if applicable)
+target/
+*.war
+*.ear
+
+# Node.js files (if any frontend uses Node.js)
+node_modules/
+dist/
