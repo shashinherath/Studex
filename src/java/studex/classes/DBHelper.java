@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
- */
 package studex.classes;
 
 import java.sql.*;
@@ -15,10 +11,15 @@ public class DBHelper {
     private static final String DB_USER = "root"; // Your DB username
     private static final String DB_PASSWORD = "1234"; // Your DB password
 
+    // Method to establish and return a database connection
+    public static Connection getConnection() throws SQLException {
+        return DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+    }
+
     // Method to test the connection to the database
     public static String checkConnection() {
         String message = "Connection failed.";
-        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
+        try (Connection conn = getConnection()) {
             if (conn != null) {
                 message = "Database connected successfully!";
             }
@@ -28,33 +29,5 @@ public class DBHelper {
             message = "Error: Unable to connect to the database! Check the details below.";
         }
         return message;
-    }
-
-    // This method will validate the user credentials
-    public static String validateUser(String username, String password) {
-        String errorMessage = null;
-        String query = "SELECT * FROM users WHERE username = ? AND password = ?";
-
-        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD); PreparedStatement stmt = conn.prepareStatement(query)) {
-
-            // Set parameters for the query
-            stmt.setString(1, username);
-            stmt.setString(2, password);
-
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    return null; // No error, credentials are valid
-                } else {
-                    errorMessage = "Invalid username or password!";
-                }
-            }
-
-        } catch (SQLException e) {
-            // Log the error message and stack trace if user validation fails
-            logger.log(Level.SEVERE, "Error: Unable to validate user credentials! Please check your database.", e);
-            errorMessage = "Error: Unable to validate user credentials! Please check your database.";
-        }
-
-        return errorMessage;
     }
 }
