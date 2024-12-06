@@ -1,6 +1,8 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ page import="studex.classes.SessionValidator" %>
 <%@ page import="studex.classes.DashboardStatsDAO" %>
+<%@ page import="studex.classes.DBHelper" %>
+<%@page import="java.sql.*"%>
 <%
     // Perform session validation
     boolean isValidSession = SessionValidator.isSessionValid(request);
@@ -11,7 +13,44 @@
         return; // Stop further processing of the page
     }
     
+    //get username
+    String user_email = (String) session.getAttribute("email");
+    String user_name = "";
+    
+    if (user_email != null) {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        
+        try {
+            conn = DBHelper.getConnection();
+            String sql = "SELECT name FROM user WHERE email = ?";
+            stmt = conn.prepareStatement(sql);
+            stmt.setString(1, user_email);
+            rs = stmt.executeQuery();
+            
+            if (rs.next()) {
+                user_name = rs.getString("name");
+            }
+        } catch (SQLException e) {
+            // Handle error (e.g., log it)
+            user_name = "Error fetching username";
+        } finally {
+            // Close resources manually
+            try {
+                if (rs != null) rs.close();
+                if (stmt != null) stmt.close();
+                if (conn != null) conn.close();
+            } catch (SQLException e) {
+                // Handle error while closing
+                e.printStackTrace();
+            }
+        }
+    }
+    
+    //get stats
     DashboardStatsDAO statsDAO = new DashboardStatsDAO();
+    int adminCount = statsDAO.getCount("admins");
     int studentCount = statsDAO.getCount("students");
     int teacherCount = statsDAO.getCount("teachers");
     int subjectCount = statsDAO.getCount("subjects");
@@ -53,7 +92,7 @@
         <li class="mb-1 group">
           <a
             href="/Studex/admin-home.jsp"
-            class="flex font-semibold items-center py-2 px-4 text-gray-900 hover:bg-gray-950 hover:text-gray-100 rounded-md group-[.active]:bg-gray-800 group-[.active]:text-white group-[.selected]:bg-gray-950 group-[.selected]:text-gray-100"
+            class="flex font-semibold items-center py-2 px-4 text-gray-900 hover:bg-gray-950 hover:text-gray-100 rounded-md bg-gray-700 text-white group-[.selected]:bg-gray-950 group-[.selected]:text-gray-100"
           >
             <i class="ri-home-2-line mr-3 text-lg"></i>
             <span class="text-sm">Dashboard</span>
@@ -61,7 +100,7 @@
         </li>
         <li class="mb-1 group">
           <a
-            href=""
+            href="/Studex/admin-student.jsp"
             class="flex font-semibold items-center py-2 px-4 text-gray-900 hover:bg-gray-950 hover:text-gray-100 rounded-md group-[.active]:bg-gray-800 group-[.active]:text-white group-[.selected]:bg-gray-950 group-[.selected]:text-gray-100"
           >
             <i class="ri-user-line mr-3 text-lg"></i>
@@ -70,7 +109,7 @@
         </li>
         <li class="mb-1 group">
           <a
-            href=""
+            href="/Studex/admin-teacher.jsp"
             class="flex font-semibold items-center py-2 px-4 text-gray-900 hover:bg-gray-950 hover:text-gray-100 rounded-md group-[.active]:bg-gray-800 group-[.active]:text-white group-[.selected]:bg-gray-950 group-[.selected]:text-gray-100"
           >
             <i class="ri-user-2-line mr-3 text-lg"></i>
@@ -79,7 +118,7 @@
         </li>
         <li class="mb-1 group">
           <a
-            href=""
+            href="/Studex/admin-subject.jsp"
             class="flex font-semibold items-center py-2 px-4 text-gray-900 hover:bg-gray-950 hover:text-gray-100 rounded-md group-[.active]:bg-gray-800 group-[.active]:text-white group-[.selected]:bg-gray-950 group-[.selected]:text-gray-100"
           >
             <i class="ri-book-line mr-3 text-lg"></i>
@@ -88,7 +127,7 @@
         </li>
         <li class="mb-1 group">
           <a
-            href=""
+            href="/Studex/admin-class.jsp"
             class="flex font-semibold items-center py-2 px-4 text-gray-900 hover:bg-gray-950 hover:text-gray-100 rounded-md group-[.active]:bg-gray-800 group-[.active]:text-white group-[.selected]:bg-gray-950 group-[.selected]:text-gray-100"
           >
             <i class="ri-graduation-cap-line mr-3 text-lg"></i>
@@ -147,7 +186,7 @@
           <li class="dropdown ml-3">
             <button type="button" class="dropdown-toggle flex items-center">
               <div class="p-2 md:block text-left">
-                <h2 class="text-sm font-semibold text-gray-800">User</h2>
+                <h2 class="text-sm font-semibold text-gray-800"><%= user_name != null && !user_name.isEmpty() ? user_name : "User" %></h2>
                 <p class="text-xs text-gray-500">Administrator</p>
               </div>
             </button>
@@ -161,13 +200,7 @@
                   >Profile</a
                 >
               </li>
-              <li>
-                <a
-                  href="#"
-                  class="flex items-center text-[13px] py-1.5 px-4 text-gray-600 hover:text-[#f84525] hover:bg-gray-50"
-                  >Settings</a
-                >
-              </li>
+             
               <li>
                 <form method="POST" action="">
                   <a
@@ -192,6 +225,11 @@
       </div>
       <div class="flex flex-wrap gap-6 p-10">
           
+    <!-- Admin Card -->
+    <div class="border border-gray-300 rounded-lg shadow-md p-6 w-52 text-center bg-white">
+        <h3 class="text-lg font-semibold text-gray-700">Admins</h3>
+        <p class="text-3xl font-bold text-purple-600"><%= adminCount %></p>
+    </div>
     <!-- Student Card -->
     <div class="border border-gray-300 rounded-lg shadow-md p-6 w-52 text-center bg-white">
         <h3 class="text-lg font-semibold text-gray-700">Students</h3>
@@ -207,13 +245,13 @@
     <!-- Subject Card -->
     <div class="border border-gray-300 rounded-lg shadow-md p-6 w-52 text-center bg-white">
         <h3 class="text-lg font-semibold text-gray-700">Subjects</h3>
-        <p class="text-3xl font-bold text-purple-600"><%= subjectCount %></p>
+        <p class="text-3xl font-bold text-red-600"><%= subjectCount %></p>
     </div>
     
     <!-- Classes Card -->
     <div class="border border-gray-300 rounded-lg shadow-md p-6 w-52 text-center bg-white">
         <h3 class="text-lg font-semibold text-gray-700">Classes</h3>
-        <p class="text-3xl font-bold text-red-600"><%= classCount %></p>
+        <p class="text-3xl font-bold text-yellow-600"><%= classCount %></p>
     </div>
 </div>
       <!-- End Content -->
