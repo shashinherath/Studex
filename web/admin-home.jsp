@@ -1,5 +1,16 @@
 <%-- Document : admin-home Created on : Dec 3, 2024, 9:43:38 PM Author : Shashin
 Malinda --%> <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ page import="studex.classes.SessionValidator" %>
+<%
+    // Perform session validation
+    boolean isValidSession = SessionValidator.isSessionValid(request);
+
+    if (!isValidSession) {
+        // If session is not valid, redirect to the login page
+        response.sendRedirect("index.jsp");
+        return; // Stop further processing of the page
+    }
+%>
 <!DOCTYPE html>
 <html lang="en">
   <head>
