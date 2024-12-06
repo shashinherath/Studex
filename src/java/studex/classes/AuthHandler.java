@@ -19,8 +19,13 @@ public class AuthHandler {
                 if (rs.next()) {
                     // Valid user, generate token and save to session
                     String sessionToken = TokenUtils.generateToken(email);
+                    
+                    String userType = rs.getString("user_type");
+
                     session.setAttribute("email", email);
+                    session.setAttribute("userType", userType);
                     session.setAttribute("sessionToken", sessionToken);
+                    
                     saveTokenToDatabase(email, sessionToken);  // Save the token in the database
                     return null; // No error, credentials are valid
                 } else {
