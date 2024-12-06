@@ -30,15 +30,15 @@
             <h2 class="text-2xl font-bold mb-6 text-center">Studex Login</h2>
             <form method="POST" action="index.jsp">
                 <div class="mb-4">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="username">
-                        Username
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="email">
+                        Email Address
                     </label>
                     <input 
                         class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
-                        id="username" 
-                        name="username" 
+                        id="email" 
+                        name="email" 
                         type="text" 
-                        placeholder="Enter your username" 
+                        placeholder="Enter your Email Address" 
                         required>
                 </div>
                 <div class="mb-6">
@@ -63,11 +63,11 @@
             </form>
             <% 
                 if (request.getMethod().equalsIgnoreCase("POST")) {
-                    String username = request.getParameter("username");
+                    String email = request.getParameter("email");
                     String password = request.getParameter("password");
 
                     // Authenticate user using AuthHandler
-                    String errorMessage = AuthHandler.authenticateUser(username, password, session);
+                    String errorMessage = AuthHandler.authenticateUser(email, password, session);
 
                     if (errorMessage == null) {
                         // Redirect to admin home page

@@ -7,10 +7,10 @@ import java.util.UUID;
 public class TokenUtils {
 
     // Method to generate a secure token
-    public static String generateToken(String username) {
+    public static String generateToken(String email) {
         try {
             // Use UUID for uniqueness and system time for additional entropy
-            String rawToken = username + ":" + UUID.randomUUID().toString() + ":" + System.currentTimeMillis();
+            String rawToken = email + ":" + UUID.randomUUID().toString() + ":" + System.currentTimeMillis();
             
             // Use SHA-256 to hash the raw token for security
             MessageDigest digest = MessageDigest.getInstance("SHA-256");

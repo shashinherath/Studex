@@ -16,9 +16,9 @@ public class SessionValidator {
         if (session != null) {
             // Get the session token from the session
             String sessionToken = (String) session.getAttribute("sessionToken");
-            String username = (String) session.getAttribute("username");
+            String email = (String) session.getAttribute("email");
 
-            System.out.println("SessionValidator: Found session, username: " + username);
+            System.out.println("SessionValidator: Found session, email: " + email);
             System.out.println("SessionValidator: Session token: " + sessionToken);
 
             // Check if sessionToken exists and if the token is valid
@@ -26,7 +26,7 @@ public class SessionValidator {
                 System.out.println("SessionValidator: Session token is not null or empty.");
 
                 // Optionally, check if the token exists in the database (to confirm validity)
-                String storedToken = getSessionTokenFromDatabase(username);
+                String storedToken = getSessionTokenFromDatabase(email);
                 System.out.println("SessionValidator: Stored token from DB: " + storedToken);
 
                 if (sessionToken.equals(storedToken)) {
@@ -46,20 +46,20 @@ public class SessionValidator {
     }
 
     // Method to retrieve the session token from the database
-    private static String getSessionTokenFromDatabase(String username) {
+    private static String getSessionTokenFromDatabase(String email) {
         String sessionToken = null;
-        String query = "SELECT token FROM users WHERE username = ?";
+        String query = "SELECT token FROM user WHERE email = ?";
 
-        System.out.println("SessionValidator: Retrieving session token from database for username: " + username);
+        System.out.println("SessionValidator: Retrieving session token from database for username: " + email);
 
         try (Connection conn = DBHelper.getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setString(1, username);
+            stmt.setString(1, email);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     sessionToken = rs.getString("token");
                     System.out.println("SessionValidator: Found session token in database: " + sessionToken);
                 } else {
-                    System.out.println("SessionValidator: No session token found in database for username: " + username);
+                    System.out.println("SessionValidator: No session token found in database for username: " + email);
                 }
             }
 

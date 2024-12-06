@@ -1,0 +1,190 @@
+ALTER TABLE users ADD COLUMN session_token VARCHAR(255);
+
+
+
+-- Table: User
+CREATE TABLE User (
+    user_id INT PRIMARY KEY AUTO_INCREMENT,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    name VARCHAR(255),
+    enrollment_date DATE,
+    phone_no VARCHAR(15),
+    user_type ENUM('Admin', 'Teacher', 'Student') NOT NULL,
+    token VARCHAR(512) DEFAULT NULL
+);
+
+-- Table: Teacher
+CREATE TABLE Teacher (
+    teacher_id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT UNIQUE,
+    FOREIGN KEY (user_id) REFERENCES User(user_id) ON DELETE CASCADE
+);
+
+-- Table: Admin
+CREATE TABLE Admin (
+    admin_id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT UNIQUE,
+    FOREIGN KEY (user_id) REFERENCES User(user_id) ON DELETE CASCADE
+);
+
+-- Table: Student
+CREATE TABLE Student (
+    student_id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT UNIQUE,
+    guardian_name VARCHAR(255),
+    FOREIGN KEY (user_id) REFERENCES User(user_id) ON DELETE CASCADE
+);
+
+-- Table: Class
+CREATE TABLE Class (
+    class_id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(255) NOT NULL,
+    year INT NOT NULL
+);
+
+-- Table: Subject
+CREATE TABLE Subject (
+    subject_id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(255) NOT NULL
+);
+
+-- Table: Enrolled (Student-Class relationship)
+CREATE TABLE Enrolled (
+    student_id INT,
+    class_id INT,
+    PRIMARY KEY (student_id, class_id),
+    FOREIGN KEY (student_id) REFERENCES Student(student_id) ON DELETE CASCADE,
+    FOREIGN KEY (class_id) REFERENCES Class(class_id) ON DELETE CASCADE
+);
+
+-- Table: Own (Teacher-Class relationship)
+CREATE TABLE Own (
+    teacher_id INT,
+    class_id INT,
+    PRIMARY KEY (teacher_id, class_id),
+    FOREIGN KEY (teacher_id) REFERENCES Teacher(teacher_id) ON DELETE CASCADE,
+    FOREIGN KEY (class_id) REFERENCES Class(class_id) ON DELETE CASCADE
+);
+
+-- Table: Learn (Student-Subject relationship)
+CREATE TABLE Learn (
+    student_id INT,
+    subject_id INT,
+    PRIMARY KEY (student_id, subject_id),
+    FOREIGN KEY (student_id) REFERENCES Student(student_id) ON DELETE CASCADE,
+    FOREIGN KEY (subject_id) REFERENCES Subject(subject_id) ON DELETE CASCADE
+);
+
+-- Table: Manage (Admin-Class relationship)
+CREATE TABLE Manage (
+    admin_id INT,
+    class_id INT,
+    PRIMARY KEY (admin_id, class_id),
+    FOREIGN KEY (admin_id) REFERENCES Admin(admin_id) ON DELETE CASCADE,
+    FOREIGN KEY (class_id) REFERENCES Class(class_id) ON DELETE CASCADE
+);
+
+-- Table: Attendance_Record
+CREATE TABLE Attendance_Record (
+    record_id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT,
+    class_id INT,
+    date DATE,
+    status ENUM('Present', 'Absent'),
+    FOREIGN KEY (user_id) REFERENCES User(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (class_id) REFERENCES Class(class_id) ON DELETE CASCADE
+);
+
+-- Table: Grades
+CREATE TABLE Grades (
+    grade_id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT,
+    subject_id INT,
+    year INT,
+    semester ENUM('First-Semester', 'Mid-Semester', 'End-Semester'),
+    mark FLOAT NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES User(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (subject_id) REFERENCES Subject(subject_id) ON DELETE CASCADE
+);
+
+
+
+
+sample data--------------------------------------------------------
+
+
+
+-- Table: User
+INSERT INTO User (email, password, name, enrollment_date, phone_no, user_type, token)
+VALUES
+('admin1@example.com', 'password123', 'Admin User', '2024-01-10', '1234567890', 'Admin', NULL),
+('teacher1@example.com', 'password123', 'Teacher One', '2024-02-15', '1234567891', 'Teacher', NULL),
+('student1@example.com', 'password123', 'Student One', '2024-03-01', '1234567892', 'Student', NULL),
+('student2@example.com', 'password123', 'Student Two', '2024-03-05', '1234567893', 'Student', NULL);
+
+-- Table: Teacher
+INSERT INTO Teacher (user_id)
+VALUES
+(2); -- References the second User (Teacher)
+
+-- Table: Admin
+INSERT INTO Admin (user_id)
+VALUES
+(1); -- References the first User (Admin)
+
+-- Table: Student
+INSERT INTO Student (user_id, guardian_name)
+VALUES
+(3, 'Guardian One'), -- References the third User (Student One)
+(4, 'Guardian Two'); -- References the fourth User (Student Two)
+
+-- Table: Class
+INSERT INTO Class (name, year)
+VALUES
+('Mathematics 101', 2024),
+('Physics 101', 2024),
+('Chemistry 101', 2024);
+
+-- Table: Subject
+INSERT INTO Subject (name)
+VALUES
+('Algebra'),
+('Mechanics'),
+('Organic Chemistry');
+
+-- Table: Enrolled
+INSERT INTO Enrolled (student_id, class_id)
+VALUES
+(1, 1), -- Student One enrolled in Mathematics 101
+(2, 2); -- Student Two enrolled in Physics 101
+
+-- Table: Own
+INSERT INTO Own (teacher_id, class_id)
+VALUES
+(1, 1), -- Teacher owns Mathematics 101
+(1, 2); -- Teacher owns Physics 101
+
+-- Table: Learn
+INSERT INTO Learn (student_id, subject_id)
+VALUES
+(1, 1), -- Student One learns Algebra
+(2, 2); -- Student Two learns Mechanics
+
+-- Table: Manage
+INSERT INTO Manage (admin_id, class_id)
+VALUES
+(1, 1), -- Admin manages Mathematics 101
+(1, 2); -- Admin manages Physics 101
+
+-- Table: Attendance_Record
+INSERT INTO Attendance_Record (user_id, class_id, date, status)
+VALUES
+(3, 1, '2024-12-01', 'Present'), -- Student One present in Mathematics 101 on 2024-12-01
+(4, 2, '2024-12-01', 'Absent');  -- Student Two absent in Physics 101 on 2024-12-01
+
+-- Table: Grades
+INSERT INTO Grades (user_id, subject_id, year, semester, mark)
+VALUES
+(3, 1, 2024, 'First-Semester', 85.5), -- Student One scored 85.5 in Algebra during First Semester
+(4, 2, 2024, 'Mid-Semester', 78.0);  -- Student Two scored 78 in Mechanics during Mid Semester
