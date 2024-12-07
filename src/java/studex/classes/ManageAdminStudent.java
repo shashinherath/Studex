@@ -6,14 +6,16 @@ import java.util.List;
 
 public class ManageAdminStudent {
 
-    public String addStudent(String name, String email, String phoneNo) {
+    public String addStudent(String name, String email, String phoneNo, String password, String userType) {
         String message = "Student added successfully!";
-        String query = "INSERT INTO user (name, email, phone_no, class) VALUES (?, ?, ?, ?)";
+        String query = "INSERT INTO user (name, email, phone_no, password, user_type, enrollment_date) VALUES (?, ?, ?, ?, ?, CURDATE())";
 
         try (Connection conn = DBHelper.getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, name);
             stmt.setString(2, email);
             stmt.setString(3, phoneNo);
+            stmt.setString(4, password);
+            stmt.setString(5, userType);
             stmt.executeUpdate();
         } catch (SQLException e) {
             message = "Error: Unable to add student!";
@@ -51,7 +53,8 @@ public class ManageAdminStudent {
                             rs.getInt("user_id"),
                             rs.getString("name"),
                             rs.getString("email"),
-                            rs.getString("phone_no")
+                            rs.getString("phone_no"),
+                            rs.getString("enrollment_date")
                     );
                     students.add(student);
                 }
