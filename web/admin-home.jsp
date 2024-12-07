@@ -50,11 +50,11 @@
     
     //get stats
     DashboardStatsDAO statsDAO = new DashboardStatsDAO();
-    int adminCount = statsDAO.getCount("admins");
-    int studentCount = statsDAO.getCount("students");
-    int teacherCount = statsDAO.getCount("teachers");
-    int subjectCount = statsDAO.getCount("subjects");
-    int classCount = statsDAO.getCount("classes");
+    int adminCount = statsDAO.getCount("user", "Admin");
+    int studentCount = statsDAO.getCount("user", "Student");
+    int teacherCount = statsDAO.getCount("user", "Teacher");
+    int subjectCount = statsDAO.getCount("subject", "");
+    int classCount = statsDAO.getCount("class", "");
 %>
 <!DOCTYPE html>
 <html lang="en">

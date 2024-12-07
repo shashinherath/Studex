@@ -8,7 +8,7 @@ public class ManageAdminStudent {
 
     public String addStudent(String name, String email, String phoneNo, String className) {
         String message = "Student added successfully!";
-        String query = "INSERT INTO students (name, email, phone_no, class) VALUES (?, ?, ?, ?)";
+        String query = "INSERT INTO user (name, email, phone_no, class) VALUES (?, ?, ?, ?)";
 
         try (Connection conn = DBHelper.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -26,7 +26,7 @@ public class ManageAdminStudent {
 
     public String deleteStudent(int userId) {
         String message = "Student deleted successfully!";
-        String query = "DELETE FROM students WHERE user_id = ?";
+        String query = "DELETE FROM user WHERE user_id = ?";
 
         try (Connection conn = DBHelper.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -41,7 +41,7 @@ public class ManageAdminStudent {
 
     public List<Student> getAllStudents() {
         List<Student> students = new ArrayList<>();
-        String query = "SELECT * FROM students";
+        String query = "SELECT * FROM user";
 
         try (Connection conn = DBHelper.getConnection();
              Statement stmt = conn.createStatement();
