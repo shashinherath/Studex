@@ -1,7 +1,6 @@
-<%@page import="java.sql.*"%>
+<%@page import="studex.classes.MyProfile"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ page import="studex.classes.SessionValidator" %>
-<%@ page import="studex.classes.DBHelper" %>
 <%@ page import="studex.classes.ManageAdminStudent, java.util.List, studex.classes.Student" %>
 <%
     // Perform session validation
@@ -15,38 +14,8 @@
 
     //get username
     String user_email = (String) session.getAttribute("email");
-    String user_name = "";
-    
-    if (user_email != null) {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rs = null;
-        
-        try {
-            conn = DBHelper.getConnection();
-            String sql = "SELECT name FROM user WHERE email = ?";
-            stmt = conn.prepareStatement(sql);
-            stmt.setString(1, user_email);
-            rs = stmt.executeQuery();
-            
-            if (rs.next()) {
-                user_name = rs.getString("name");
-            }
-        } catch (SQLException e) {
-            // Handle error (e.g., log it)
-            user_name = "Error fetching username";
-        } finally {
-            // Close resources manually
-            try {
-                if (rs != null) rs.close();
-                if (stmt != null) stmt.close();
-                if (conn != null) conn.close();
-            } catch (SQLException e) {
-                // Handle error while closing
-                e.printStackTrace();
-            }
-        }
-    }
+    MyProfile profile = new MyProfile();
+    String user_name = profile.getMyUserName(user_email);
     
     //add student
     String action = request.getParameter("action");
