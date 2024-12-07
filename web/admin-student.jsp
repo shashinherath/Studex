@@ -26,7 +26,9 @@
         String name = request.getParameter("name");
         String email = request.getParameter("email");
         String phoneNo = request.getParameter("phone_no");
-        message = manager.addStudent(name, email, phoneNo);
+        String password = request.getParameter("password");
+        String userType = "Student";
+        message = manager.addStudent(name, email, phoneNo, password, userType);
     } else if ("delete".equals(action)) {
         int userId = Integer.parseInt(request.getParameter("user_id"));
         message = manager.deleteStudent(userId);
@@ -216,21 +218,28 @@
                     <table class="table-auto w-full bg-white shadow-md rounded">
                         <thead>
                             <tr class="bg-gray-200">
-                                <th class="px-4 py-2">User ID</th>
                                 <th class="px-4 py-2">Name</th>
                                 <th class="px-4 py-2">Email</th>
                                 <th class="px-4 py-2">Phone</th>
-                                <th class="px-4 py-2">Class</th>
-                                <th class="px-4 py-2">Actions</th>
+                                <th class="px-4 py-2">Enrollment Date</th>
+                                <th class="px-4 py-2"></th>
+                                <th class="px-4 py-2"></th>
                             </tr>
                         </thead>
                         <tbody>
                             <% for (Student student : students) {%>
                             <tr>
-                                <td class="border px-4 py-2"><%= student.getUserId()%></td>
                                 <td class="border px-4 py-2"><%= student.getName()%></td>
                                 <td class="border px-4 py-2"><%= student.getEmail()%></td>
                                 <td class="border px-4 py-2"><%= student.getPhoneNo()%></td>
+                                <td class="border px-4 py-2"><%= student.getEnrollDate()%></td>
+                                <td class="border px-4 py-2">
+                                    <form method="post" style="display:inline;">
+                                        <input type="hidden" name="action" value="update">
+                                        <input type="hidden" name="user_id" value="<%= student.getUserId()%>">
+                                        <button type="submit" class="bg-green-500 text-white px-2 py-1 rounded">Update</button>
+                                    </form>
+                                </td>                               
                                 <td class="border px-4 py-2">
                                     <form method="post" style="display:inline;">
                                         <input type="hidden" name="action" value="delete">
@@ -264,8 +273,8 @@
                             <input type="text" name="phone_no" class="border rounded w-full px-3 py-2">
                         </div>
                         <div class="mb-4">
-                            <label class="block text-gray-700">Class</label>
-                            <input type="text" name="class" class="border rounded w-full px-3 py-2">
+                            <label class="block text-gray-700">Password</label>
+                            <input type="password" name="password" class="border rounded w-full px-3 py-2">
                         </div>
                         <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Add</button>
                         <button type="button" onclick="document.getElementById('addModal').classList.add('hidden')" class="bg-gray-500 text-white px-4 py-2 rounded">Cancel</button>
