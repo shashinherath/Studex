@@ -26,8 +26,7 @@
         String name = request.getParameter("name");
         String email = request.getParameter("email");
         String phoneNo = request.getParameter("phone_no");
-        String className = request.getParameter("class");
-        message = manager.addStudent(name, email, phoneNo, className);
+        message = manager.addStudent(name, email, phoneNo);
     } else if ("delete".equals(action)) {
         int userId = Integer.parseInt(request.getParameter("user_id"));
         message = manager.deleteStudent(userId);
@@ -232,7 +231,6 @@
                                 <td class="border px-4 py-2"><%= student.getName()%></td>
                                 <td class="border px-4 py-2"><%= student.getEmail()%></td>
                                 <td class="border px-4 py-2"><%= student.getPhoneNo()%></td>
-                                <td class="border px-4 py-2"><%= student.getClassName()%></td>
                                 <td class="border px-4 py-2">
                                     <form method="post" style="display:inline;">
                                         <input type="hidden" name="action" value="delete">
