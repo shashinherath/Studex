@@ -1,6 +1,7 @@
-<%-- Document : admin-home Created on : Dec 3, 2024, 9:43:38 PM Author : Shashin
-Malinda --%> <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page import="studex.classes.MyProfile"%>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ page import="studex.classes.SessionValidator" %>
+<%@ page import="studex.classes.DashboardStatsDAO" %>
 <%
     // Perform session validation
     boolean isValidSession = SessionValidator.isSessionValid(request);
@@ -10,6 +11,19 @@ Malinda --%> <%@page contentType="text/html" pageEncoding="UTF-8"%>
         response.sendRedirect("index.jsp");
         return; // Stop further processing of the page
     }
+    
+    //get username
+    String user_email = (String) session.getAttribute("email");
+    MyProfile profile = new MyProfile();
+    String user_name = profile.getMyUserName(user_email);
+
+    //get stats
+    DashboardStatsDAO statsDAO = new DashboardStatsDAO();
+    int adminCount = statsDAO.getCount("user", "Admin");
+    int studentCount = statsDAO.getCount("user", "Student");
+    int teacherCount = statsDAO.getCount("user", "Teacher");
+    int subjectCount = statsDAO.getCount("subject", "");
+    int classCount = statsDAO.getCount("class", "");
 %>
 <!DOCTYPE html>
 <html lang="en">
@@ -46,8 +60,8 @@ Malinda --%> <%@page contentType="text/html" pageEncoding="UTF-8"%>
         <span class="text-gray-400 font-bold">ADMIN PANEL</span>
         <li class="mb-1 group">
           <a
-            href=""
-            class="flex font-semibold items-center py-2 px-4 text-gray-900 hover:bg-gray-950 hover:text-gray-100 rounded-md group-[.active]:bg-gray-800 group-[.active]:text-white group-[.selected]:bg-gray-950 group-[.selected]:text-gray-100"
+            href="/Studex/admin-home.jsp"
+            class="flex font-semibold items-center py-2 px-4 text-gray-900 hover:bg-gray-950 hover:text-gray-100 rounded-md bg-gray-700 text-white group-[.selected]:bg-gray-950 group-[.selected]:text-gray-100"
           >
             <i class="ri-home-2-line mr-3 text-lg"></i>
             <span class="text-sm">Dashboard</span>
@@ -55,7 +69,7 @@ Malinda --%> <%@page contentType="text/html" pageEncoding="UTF-8"%>
         </li>
         <li class="mb-1 group">
           <a
-            href=""
+            href="/Studex/admin-student.jsp"
             class="flex font-semibold items-center py-2 px-4 text-gray-900 hover:bg-gray-950 hover:text-gray-100 rounded-md group-[.active]:bg-gray-800 group-[.active]:text-white group-[.selected]:bg-gray-950 group-[.selected]:text-gray-100"
           >
             <i class="ri-user-line mr-3 text-lg"></i>
@@ -64,7 +78,7 @@ Malinda --%> <%@page contentType="text/html" pageEncoding="UTF-8"%>
         </li>
         <li class="mb-1 group">
           <a
-            href=""
+            href="/Studex/admin-teacher.jsp"
             class="flex font-semibold items-center py-2 px-4 text-gray-900 hover:bg-gray-950 hover:text-gray-100 rounded-md group-[.active]:bg-gray-800 group-[.active]:text-white group-[.selected]:bg-gray-950 group-[.selected]:text-gray-100"
           >
             <i class="ri-user-2-line mr-3 text-lg"></i>
@@ -73,7 +87,7 @@ Malinda --%> <%@page contentType="text/html" pageEncoding="UTF-8"%>
         </li>
         <li class="mb-1 group">
           <a
-            href=""
+            href="/Studex/admin-subject.jsp"
             class="flex font-semibold items-center py-2 px-4 text-gray-900 hover:bg-gray-950 hover:text-gray-100 rounded-md group-[.active]:bg-gray-800 group-[.active]:text-white group-[.selected]:bg-gray-950 group-[.selected]:text-gray-100"
           >
             <i class="ri-book-line mr-3 text-lg"></i>
@@ -82,7 +96,7 @@ Malinda --%> <%@page contentType="text/html" pageEncoding="UTF-8"%>
         </li>
         <li class="mb-1 group">
           <a
-            href=""
+            href="/Studex/admin-class.jsp"
             class="flex font-semibold items-center py-2 px-4 text-gray-900 hover:bg-gray-950 hover:text-gray-100 rounded-md group-[.active]:bg-gray-800 group-[.active]:text-white group-[.selected]:bg-gray-950 group-[.selected]:text-gray-100"
           >
             <i class="ri-graduation-cap-line mr-3 text-lg"></i>
@@ -107,308 +121,6 @@ Malinda --%> <%@page contentType="text/html" pageEncoding="UTF-8"%>
         ></button>
 
         <ul class="ml-auto flex items-center">
-          <li class="mr-1 dropdown">
-            <button
-              type="button"
-              class="dropdown-toggle text-gray-400 mr-4 w-8 h-8 rounded flex items-center justify-center hover:text-gray-600"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                class="hover:bg-gray-100 rounded-full"
-                viewBox="0 0 24 24"
-                style="fill: gray"
-              >
-                <path
-                  d="M19.023 16.977a35.13 35.13 0 0 1-1.367-1.384c-.372-.378-.596-.653-.596-.653l-2.8-1.337A6.962 6.962 0 0 0 16 9c0-3.859-3.14-7-7-7S2 5.141 2 9s3.14 7 7 7c1.763 0 3.37-.66 4.603-1.739l1.337 2.8s.275.224.653.596c.387.363.896.854 1.384 1.367l1.358 1.392.604.646 2.121-2.121-.646-.604c-.379-.372-.885-.866-1.391-1.36zM9 14c-2.757 0-5-2.243-5-5s2.243-5 5-5 5 2.243 5 5-2.243 5-5 5z"
-                ></path>
-              </svg>
-            </button>
-            <div
-              class="dropdown-menu shadow-md shadow-black/5 z-30 hidden max-w-xs w-full bg-white rounded-md border border-gray-100"
-            >
-              <form action="" class="p-4 border-b border-b-gray-100">
-                <div class="relative w-full">
-                  <input
-                    type="text"
-                    class="py-2 pr-4 pl-10 bg-gray-50 w-full outline-none border border-gray-100 rounded-md text-sm focus:border-blue-500"
-                    placeholder="Search..."
-                  />
-                  <i
-                    class="ri-search-line absolute top-1/2 left-4 -translate-y-1/2 text-gray-900"
-                  ></i>
-                </div>
-              </form>
-            </div>
-          </li>
-          <li class="dropdown">
-            <button
-              type="button"
-              class="dropdown-toggle text-gray-400 mr-4 w-8 h-8 rounded flex items-center justify-center hover:text-gray-600"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                class="hover:bg-gray-100 rounded-full"
-                viewBox="0 0 24 24"
-                style="fill: gray"
-              >
-                <path
-                  d="M19 13.586V10c0-3.217-2.185-5.927-5.145-6.742C13.562 2.52 12.846 2 12 2s-1.562.52-1.855 1.258C7.185 4.074 5 6.783 5 10v3.586l-1.707 1.707A.996.996 0 0 0 3 16v2a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1v-2a.996.996 0 0 0-.293-.707L19 13.586zM19 17H5v-.586l1.707-1.707A.996.996 0 0 0 7 14v-4c0-2.757 2.243-5 5-5s5 2.243 5 5v4c0 .266.105.52.293.707L19 16.414V17zm-7 5a2.98 2.98 0 0 0 2.818-2H9.182A2.98 2.98 0 0 0 12 22z"
-                ></path>
-              </svg>
-            </button>
-            <div
-              class="dropdown-menu shadow-md shadow-black/5 z-30 hidden max-w-xs w-full bg-white rounded-md border border-gray-100"
-            >
-              <div
-                class="flex items-center px-4 pt-4 border-b border-b-gray-100 notification-tab"
-              >
-                <button
-                  type="button"
-                  data-tab="notification"
-                  data-tab-page="notifications"
-                  class="text-gray-400 font-medium text-[13px] hover:text-gray-600 border-b-2 border-b-transparent mr-4 pb-1 active"
-                >
-                  Notifications
-                </button>
-                <button
-                  type="button"
-                  data-tab="notification"
-                  data-tab-page="messages"
-                  class="text-gray-400 font-medium text-[13px] hover:text-gray-600 border-b-2 border-b-transparent mr-4 pb-1"
-                >
-                  Messages
-                </button>
-              </div>
-              <div class="my-2">
-                <ul
-                  class="max-h-64 overflow-y-auto"
-                  data-tab-for="notification"
-                  data-page="notifications"
-                >
-                  <li>
-                    <a
-                      href="#"
-                      class="py-2 px-4 flex items-center hover:bg-gray-50 group"
-                    >
-                      <img
-                        src="https://placehold.co/32x32"
-                        alt=""
-                        class="w-8 h-8 rounded block object-cover align-middle"
-                      />
-                      <div class="ml-2">
-                        <div
-                          class="text-[13px] text-gray-600 font-medium truncate group-hover:text-blue-500"
-                        >
-                          New order
-                        </div>
-                        <div class="text-[11px] text-gray-400">from a user</div>
-                      </div>
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href="#"
-                      class="py-2 px-4 flex items-center hover:bg-gray-50 group"
-                    >
-                      <img
-                        src="https://placehold.co/32x32"
-                        alt=""
-                        class="w-8 h-8 rounded block object-cover align-middle"
-                      />
-                      <div class="ml-2">
-                        <div
-                          class="text-[13px] text-gray-600 font-medium truncate group-hover:text-blue-500"
-                        >
-                          New order
-                        </div>
-                        <div class="text-[11px] text-gray-400">from a user</div>
-                      </div>
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href="#"
-                      class="py-2 px-4 flex items-center hover:bg-gray-50 group"
-                    >
-                      <img
-                        src="https://placehold.co/32x32"
-                        alt=""
-                        class="w-8 h-8 rounded block object-cover align-middle"
-                      />
-                      <div class="ml-2">
-                        <div
-                          class="text-[13px] text-gray-600 font-medium truncate group-hover:text-blue-500"
-                        >
-                          New order
-                        </div>
-                        <div class="text-[11px] text-gray-400">from a user</div>
-                      </div>
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href="#"
-                      class="py-2 px-4 flex items-center hover:bg-gray-50 group"
-                    >
-                      <img
-                        src="https://placehold.co/32x32"
-                        alt=""
-                        class="w-8 h-8 rounded block object-cover align-middle"
-                      />
-                      <div class="ml-2">
-                        <div
-                          class="text-[13px] text-gray-600 font-medium truncate group-hover:text-blue-500"
-                        >
-                          New order
-                        </div>
-                        <div class="text-[11px] text-gray-400">from a user</div>
-                      </div>
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href="#"
-                      class="py-2 px-4 flex items-center hover:bg-gray-50 group"
-                    >
-                      <img
-                        src="https://placehold.co/32x32"
-                        alt=""
-                        class="w-8 h-8 rounded block object-cover align-middle"
-                      />
-                      <div class="ml-2">
-                        <div
-                          class="text-[13px] text-gray-600 font-medium truncate group-hover:text-blue-500"
-                        >
-                          New order
-                        </div>
-                        <div class="text-[11px] text-gray-400">from a user</div>
-                      </div>
-                    </a>
-                  </li>
-                </ul>
-                <ul
-                  class="max-h-64 overflow-y-auto hidden"
-                  data-tab-for="notification"
-                  data-page="messages"
-                >
-                  <li>
-                    <a
-                      href="#"
-                      class="py-2 px-4 flex items-center hover:bg-gray-50 group"
-                    >
-                      <img
-                        src="https://placehold.co/32x32"
-                        alt=""
-                        class="w-8 h-8 rounded block object-cover align-middle"
-                      />
-                      <div class="ml-2">
-                        <div
-                          class="text-[13px] text-gray-600 font-medium truncate group-hover:text-blue-500"
-                        >
-                          John Doe
-                        </div>
-                        <div class="text-[11px] text-gray-400">
-                          Hello there!
-                        </div>
-                      </div>
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href="#"
-                      class="py-2 px-4 flex items-center hover:bg-gray-50 group"
-                    >
-                      <img
-                        src="https://placehold.co/32x32"
-                        alt=""
-                        class="w-8 h-8 rounded block object-cover align-middle"
-                      />
-                      <div class="ml-2">
-                        <div
-                          class="text-[13px] text-gray-600 font-medium truncate group-hover:text-blue-500"
-                        >
-                          John Doe
-                        </div>
-                        <div class="text-[11px] text-gray-400">
-                          Hello there!
-                        </div>
-                      </div>
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href="#"
-                      class="py-2 px-4 flex items-center hover:bg-gray-50 group"
-                    >
-                      <img
-                        src="https://placehold.co/32x32"
-                        alt=""
-                        class="w-8 h-8 rounded block object-cover align-middle"
-                      />
-                      <div class="ml-2">
-                        <div
-                          class="text-[13px] text-gray-600 font-medium truncate group-hover:text-blue-500"
-                        >
-                          John Doe
-                        </div>
-                        <div class="text-[11px] text-gray-400">
-                          Hello there!
-                        </div>
-                      </div>
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href="#"
-                      class="py-2 px-4 flex items-center hover:bg-gray-50 group"
-                    >
-                      <img
-                        src="https://placehold.co/32x32"
-                        alt=""
-                        class="w-8 h-8 rounded block object-cover align-middle"
-                      />
-                      <div class="ml-2">
-                        <div
-                          class="text-[13px] text-gray-600 font-medium truncate group-hover:text-blue-500"
-                        >
-                          John Doe
-                        </div>
-                        <div class="text-[11px] text-gray-400">
-                          Hello there!
-                        </div>
-                      </div>
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href="#"
-                      class="py-2 px-4 flex items-center hover:bg-gray-50 group"
-                    >
-                      <img
-                        src="https://placehold.co/32x32"
-                        alt=""
-                        class="w-8 h-8 rounded block object-cover align-middle"
-                      />
-                      <div class="ml-2">
-                        <div
-                          class="text-[13px] text-gray-600 font-medium truncate group-hover:text-blue-500"
-                        >
-                          John Doe
-                        </div>
-                        <div class="text-[11px] text-gray-400">
-                          Hello there!
-                        </div>
-                      </div>
-                    </a>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </li>
           <button id="fullscreen-button">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -442,21 +154,8 @@ Malinda --%> <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
           <li class="dropdown ml-3">
             <button type="button" class="dropdown-toggle flex items-center">
-              <div class="flex-shrink-0 w-10 h-10 relative">
-                <div
-                  class="p-1 bg-white rounded-full focus:outline-none focus:ring"
-                >
-                  <img class="w-8 h-8 rounded-full" src="" alt="" />
-                  <div
-                    class="top-0 left-7 absolute w-3 h-3 bg-lime-400 border-2 border-white rounded-full animate-ping"
-                  ></div>
-                  <div
-                    class="top-0 left-7 absolute w-3 h-3 bg-lime-500 border-2 border-white rounded-full"
-                  ></div>
-                </div>
-              </div>
               <div class="p-2 md:block text-left">
-                <h2 class="text-sm font-semibold text-gray-800">User</h2>
+                <h2 class="text-sm font-semibold text-gray-800"><%= user_name != null && !user_name.isEmpty() ? user_name : "User" %></h2>
                 <p class="text-xs text-gray-500">Administrator</p>
               </div>
             </button>
@@ -470,13 +169,7 @@ Malinda --%> <%@page contentType="text/html" pageEncoding="UTF-8"%>
                   >Profile</a
                 >
               </li>
-              <li>
-                <a
-                  href="#"
-                  class="flex items-center text-[13px] py-1.5 px-4 text-gray-600 hover:text-[#f84525] hover:bg-gray-50"
-                  >Settings</a
-                >
-              </li>
+             
               <li>
                 <form method="POST" action="">
                   <a
@@ -496,9 +189,40 @@ Malinda --%> <%@page contentType="text/html" pageEncoding="UTF-8"%>
       <!-- end navbar -->
 
       <!-- Content -->
-      <div class="p-6">
-        <h1>Hello</h1>
+      <div>
+          <h1 class="text-4xl font-bold pl-10 pt-10">Dashboard</h1>
       </div>
+      <div class="flex flex-wrap gap-6 p-10">
+          
+    <!-- Admin Card -->
+    <div class="border border-gray-300 rounded-lg shadow-md p-6 w-52 text-center bg-white">
+        <h3 class="text-lg font-semibold text-gray-700">Admins</h3>
+        <p class="text-3xl font-bold text-purple-600"><%= adminCount %></p>
+    </div>
+    <!-- Student Card -->
+    <div class="border border-gray-300 rounded-lg shadow-md p-6 w-52 text-center bg-white">
+        <h3 class="text-lg font-semibold text-gray-700">Students</h3>
+        <p class="text-3xl font-bold text-blue-600"><%= studentCount %></p>
+    </div>
+    
+    <!-- Teacher Card -->
+    <div class="border border-gray-300 rounded-lg shadow-md p-6 w-52 text-center bg-white">
+        <h3 class="text-lg font-semibold text-gray-700">Teachers</h3>
+        <p class="text-3xl font-bold text-green-600"><%= teacherCount %></p>
+    </div>
+    
+    <!-- Subject Card -->
+    <div class="border border-gray-300 rounded-lg shadow-md p-6 w-52 text-center bg-white">
+        <h3 class="text-lg font-semibold text-gray-700">Subjects</h3>
+        <p class="text-3xl font-bold text-red-600"><%= subjectCount %></p>
+    </div>
+    
+    <!-- Classes Card -->
+    <div class="border border-gray-300 rounded-lg shadow-md p-6 w-52 text-center bg-white">
+        <h3 class="text-lg font-semibold text-gray-700">Classes</h3>
+        <p class="text-3xl font-bold text-yellow-600"><%= classCount %></p>
+    </div>
+</div>
       <!-- End Content -->
     </main>
 
