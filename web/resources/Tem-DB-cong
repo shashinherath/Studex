@@ -188,3 +188,40 @@ INSERT INTO Grades (user_id, subject_id, year, semester, mark)
 VALUES
 (3, 1, 2024, 'First-Semester', 85.5), -- Student One scored 85.5 in Algebra during First Semester
 (4, 2, 2024, 'Mid-Semester', 78.0);  -- Student Two scored 78 in Mechanics during Mid Semester
+
+
+
+
+
+
+-- Update the Class table with names like 10-A, 10-B
+INSERT INTO Class (name, year)
+VALUES
+('10-A', 2024),
+('10-B', 2024),
+('10-C', 2024);
+
+
+-- Insert sample students into User table
+INSERT INTO User (email, password, name, enrollment_date, phone_no, user_type, token)
+VALUES
+('student5@example.com', 'password123', 'Student Five', '2024-03-10', '1234567896', 'Student', NULL),
+('student6@example.com', 'password123', 'Student Six', '2024-03-15', '1234567897', 'Student', NULL);
+
+
+
+-- Insert corresponding students into the Student table
+INSERT INTO Student (user_id, guardian_name)
+VALUES
+(5, 'Guardian Five'),  -- References the seventh User (Student Five)
+(6, 'Guardian Six');   -- References the eighth User (Student Six)
+
+
+
+-- Enroll Student Five and Student Six in the classes 10-A, 10-B, and 10-C
+INSERT INTO Enrolled (student_id, class_id)
+VALUES
+(1, 1),  -- Student Five enrolled in 10-A
+(2, 2),  -- Student Five enrolled in 10-B
+(7, 2),  -- Student Six enrolled in 10-B
+(8, 3);  -- Student Six enrolled in 10-C
