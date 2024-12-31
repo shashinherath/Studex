@@ -156,9 +156,6 @@
                     <button id="subjects-tab" class="tab-button block w-full text-left px-6 py-3 hover:bg-purple-100 text-gray-800 text-xs" onclick="displayContent('subjects', 'subjects-tab')">
                         <i class="ri-book-line mr-3 text-lg"></i>Review Student Performance
                     </button>
-                    <button id="classes-tab" class="tab-button block w-full text-left px-6 py-3 hover:bg-purple-100 text-gray-800 text-xs" onclick="displayContent('classes', 'classes-tab')">
-                        <i class="ri-graduation-cap-line mr-3 text-lg"></i>Classes
-                    </button>
                 </nav>
             </div>
 
@@ -464,6 +461,12 @@
                                         body: urlParams.toString(), // Send as URL-encoded string
                                     })
                                             .then(response => response.text()) // Parse JSON response
+                                            .then(data => {
+                                                alert('Attendance submitted successfully');
+                                                location.reload();
+
+                                                // Optionally, handle success response (e.g., show a success message or redirect)
+                                            })
 
                                             .catch(error => {
                                                 console.error("Error fetching student data:", error);
@@ -773,6 +776,8 @@
                                         .then(response => response.json())
                                         .then(data => {
                                             alert('Results submitted successfully');
+                                            location.reload();
+
                                             // Optionally, handle success response (e.g., show a success message or redirect)
                                         })
                                         .catch(error => {
@@ -977,7 +982,7 @@
                                             data-class-year="<%= classModel.getYear()%>"
                                             class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
                                             onclick="fetchStudentResultByClass('<%= classModel.getClassId()%>', '<%= classModel.getYear()%>', '<%= classModel.getClassName()%>')">
-                                            View Students
+                                            View Class Academic Performance 
                                         </button>
                                     </div>
                                 </div>
@@ -985,10 +990,6 @@
                             </div>
                         </div>
                         <div id="students-container-for-performance"></div>
-                    </div>
-                    <div id="classes" class="dynamic-content" style="display: none;">
-                        <h2 class="text-2xl font-bold text-gray-800">Students</h2>
-                        <p class="mt-4 text-gray-600">classes</p>
                     </div>
                 </div>
             </div>
