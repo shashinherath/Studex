@@ -6,9 +6,9 @@ import java.util.List;
 
 public class ManageAdminStudent {
 
-    public String addStudent(String name, String email, String phoneNo, String password, String userType) {
+    public String addStudent(String name, String email, String phoneNo, String password, String userType, String className) {
         String message = "Student added successfully!";
-        String query = "INSERT INTO user (name, email, phone_no, password, user_type, enrollment_date) VALUES (?, ?, ?, ?, ?, CURDATE())";
+        String query = "INSERT INTO user (name, email, phone_no, password, user_type, enrollment_date, class) VALUES (?, ?, ?, ?, ?, CURDATE(), ?)";
 
         try (Connection conn = DBHelper.getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, name);
@@ -16,6 +16,7 @@ public class ManageAdminStudent {
             stmt.setString(3, phoneNo);
             stmt.setString(4, password);
             stmt.setString(5, userType);
+            stmt.setString(6, className);
             stmt.executeUpdate();
         } catch (SQLException e) {
             message = "Error: Unable to add student!";
@@ -50,7 +51,8 @@ public class ManageAdminStudent {
                         rs.getString("name"),
                         rs.getString("email"),
                         rs.getString("phone_no"),
-                        rs.getString("enrollment_date"));
+                        rs.getString("enrollment_date"),
+                        rs.getString("class"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -58,7 +60,7 @@ public class ManageAdminStudent {
         return student;
     }
 
-    public String updateStudent(int userId, String name, String email, String phoneNo, String enrollDate, String password) {
+    public String updateStudent(int userId, String name, String email, String phoneNo, String enrollDate, String className, String password) {
         String message = "Student updated successfully!";
         StringBuilder query = new StringBuilder("UPDATE user SET ");
         boolean first = true;
@@ -87,6 +89,12 @@ public class ManageAdminStudent {
             }
             query.append("enrollment_date = ?");
         }
+        if (className != null && !className.isEmpty()) {
+            if (!first) {
+                query.append(", ");
+            }
+            query.append("class = ?");
+        }
         if (password != null && !password.isEmpty()) {
             if (!first) {
                 query.append(", ");
@@ -108,6 +116,9 @@ public class ManageAdminStudent {
             }
             if (enrollDate != null && !enrollDate.isEmpty()) {
                 stmt.setString(index++, enrollDate);
+            }
+            if (className != null && !className.isEmpty()) {
+                stmt.setString(index++, className);
             }
             if (password != null && !password.isEmpty()) {
                 stmt.setString(index++, password);
@@ -136,7 +147,8 @@ public class ManageAdminStudent {
                             rs.getString("name"),
                             rs.getString("email"),
                             rs.getString("phone_no"),
-                            rs.getString("enrollment_date")
+                            rs.getString("enrollment_date"),
+                            rs.getString("class")
                     );
                     students.add(student);
                 }
