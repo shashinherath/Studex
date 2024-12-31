@@ -25,6 +25,17 @@
     int teacherCount = statsDAO.getCount("user", "Teacher");
     int subjectCount = statsDAO.getCount("subject", "");
     int classCount = statsDAO.getCount("class", "");
+
+    //logout
+    // Check if the logout action is triggered
+    String action = request.getParameter("action");
+    if ("logout".equals(action)) {
+        // Invoke the LogoutHandler to clear session data
+        LogoutHandler.logout(session);
+
+        // Redirect to the login page after logout
+        response.sendRedirect("index.jsp");
+    }
 %>
 <!DOCTYPE html>
 <html lang="en">
@@ -164,29 +175,33 @@
                             class="dropdown-menu shadow-md shadow-black/5 z-30 hidden py-1.5 rounded-md bg-white border border-gray-100 w-full max-w-[140px]"
                             >
 
-                            <li class="flex justify-center">
-                                <button id="Logout-button" type="button" class="text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900">Logout</button>
-                                <script>
-                                    const logoutButton = document.getElementById("Logout-button");
 
-                                    logoutButton.addEventListener("click", () => {
-                                        // Redirect to the same page with a logout action
-                                        window.location.href = 'admin-home.jsp?action=logout';
-                                    });
-                                </script>
-                                <%
-                                    // Check if the logout action is triggered
-                                    String action = request.getParameter("action");
-                                    if ("logout".equals(action)) {
-                                        // Invoke the LogoutHandler to clear session data
-                                        LogoutHandler.logout(session);
-
-                                        // Redirect to the login page after logout
-                                        response.sendRedirect("index.jsp");
-                                    }
-                                %>
-
+                            <li>
+                                <a
+                                    href="#"
+                                    class="flex items-center text-[13px] py-1.5 px-4 text-gray-600 hover:text-[#f84525] hover:bg-gray-50"
+                                    >Profile</a
+                                >
                             </li>
+
+                            <li>
+                                <a
+                                    role="menuitem"
+                                    id="Logout-button"
+                                    class="flex items-center text-[13px] py-1.5 px-4 text-gray-600 hover:text-[#f84525] hover:bg-gray-50 cursor-pointer"
+
+                                    >
+                                    Log Out
+                                </a>
+                            </li>
+                            <script>
+                                const logoutButton = document.getElementById("Logout-button");
+
+                                logoutButton.addEventListener("click", () => {
+                                    // Redirect to the same page with a logout action
+                                    window.location.href = 'admin-home.jsp?action=logout';
+                                });
+                            </script>
                         </ul>
                     </li>
                 </ul>
@@ -235,213 +250,213 @@
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
         <script>
-                                    // start: Sidebar
-                                    const sidebarToggle = document.querySelector(".sidebar-toggle");
-                                    const sidebarOverlay = document.querySelector(".sidebar-overlay");
-                                    const sidebarMenu = document.querySelector(".sidebar-menu");
-                                    const main = document.querySelector(".main");
-                                    sidebarToggle.addEventListener("click", function (e) {
-                                        e.preventDefault();
-                                        main.classList.toggle("active");
-                                        sidebarOverlay.classList.toggle("hidden");
-                                        sidebarMenu.classList.toggle("-translate-x-full");
-                                    });
-                                    sidebarOverlay.addEventListener("click", function (e) {
-                                        e.preventDefault();
-                                        main.classList.add("active");
-                                        sidebarOverlay.classList.add("hidden");
-                                        sidebarMenu.classList.add("-translate-x-full");
-                                    });
-                                    document
-                                            .querySelectorAll(".sidebar-dropdown-toggle")
-                                            .forEach(function (item) {
-                                                item.addEventListener("click", function (e) {
-                                                    e.preventDefault();
-                                                    const parent = item.closest(".group");
-                                                    if (parent.classList.contains("selected")) {
-                                                        parent.classList.remove("selected");
-                                                    } else {
-                                                        document
-                                                                .querySelectorAll(".sidebar-dropdown-toggle")
-                                                                .forEach(function (i) {
-                                                                    i.closest(".group").classList.remove("selected");
-                                                                });
-                                                        parent.classList.add("selected");
-                                                    }
-                                                });
+                                // start: Sidebar
+                                const sidebarToggle = document.querySelector(".sidebar-toggle");
+                                const sidebarOverlay = document.querySelector(".sidebar-overlay");
+                                const sidebarMenu = document.querySelector(".sidebar-menu");
+                                const main = document.querySelector(".main");
+                                sidebarToggle.addEventListener("click", function (e) {
+                                    e.preventDefault();
+                                    main.classList.toggle("active");
+                                    sidebarOverlay.classList.toggle("hidden");
+                                    sidebarMenu.classList.toggle("-translate-x-full");
+                                });
+                                sidebarOverlay.addEventListener("click", function (e) {
+                                    e.preventDefault();
+                                    main.classList.add("active");
+                                    sidebarOverlay.classList.add("hidden");
+                                    sidebarMenu.classList.add("-translate-x-full");
+                                });
+                                document
+                                        .querySelectorAll(".sidebar-dropdown-toggle")
+                                        .forEach(function (item) {
+                                            item.addEventListener("click", function (e) {
+                                                e.preventDefault();
+                                                const parent = item.closest(".group");
+                                                if (parent.classList.contains("selected")) {
+                                                    parent.classList.remove("selected");
+                                                } else {
+                                                    document
+                                                            .querySelectorAll(".sidebar-dropdown-toggle")
+                                                            .forEach(function (i) {
+                                                                i.closest(".group").classList.remove("selected");
+                                                            });
+                                                    parent.classList.add("selected");
+                                                }
                                             });
-                                    // end: Sidebar
+                                        });
+                                // end: Sidebar
 
-                                    // start: Popper
-                                    const popperInstance = {};
-                                    document.querySelectorAll(".dropdown").forEach(function (item, index) {
-                                        const popperId = "popper-" + index;
-                                        const toggle = item.querySelector(".dropdown-toggle");
-                                        const menu = item.querySelector(".dropdown-menu");
-                                        menu.dataset.popperId = popperId;
-                                        popperInstance[popperId] = Popper.createPopper(toggle, menu, {
-                                            modifiers: [
-                                                {
-                                                    name: "offset",
-                                                    options: {
-                                                        offset: [0, 8],
-                                                    },
-                                                },
-                                                {
-                                                    name: "preventOverflow",
-                                                    options: {
-                                                        padding: 24,
-                                                    },
-                                                },
-                                            ],
-                                            placement: "bottom-end",
-                                        });
-                                    });
-                                    document.addEventListener("click", function (e) {
-                                        const toggle = e.target.closest(".dropdown-toggle");
-                                        const menu = e.target.closest(".dropdown-menu");
-                                        if (toggle) {
-                                            const menuEl = toggle
-                                                    .closest(".dropdown")
-                                                    .querySelector(".dropdown-menu");
-                                            const popperId = menuEl.dataset.popperId;
-                                            if (menuEl.classList.contains("hidden")) {
-                                                hideDropdown();
-                                                menuEl.classList.remove("hidden");
-                                                showPopper(popperId);
-                                            } else {
-                                                menuEl.classList.add("hidden");
-                                                hidePopper(popperId);
-                                            }
-                                        } else if (!menu) {
-                                            hideDropdown();
-                                        }
-                                    });
-
-                                    function hideDropdown() {
-                                        document.querySelectorAll(".dropdown-menu").forEach(function (item) {
-                                            item.classList.add("hidden");
-                                        });
-                                    }
-                                    function showPopper(popperId) {
-                                        popperInstance[popperId].setOptions(function (options) {
-                                            return {
-                                                ...options,
-                                                modifiers: [
-                                                    ...options.modifiers,
-                                                    {name: "eventListeners", enabled: true},
-                                                ],
-                                            };
-                                        });
-                                        popperInstance[popperId].update();
-                                    }
-                                    function hidePopper(popperId) {
-                                        popperInstance[popperId].setOptions(function (options) {
-                                            return {
-                                                ...options,
-                                                modifiers: [
-                                                    ...options.modifiers,
-                                                    {name: "eventListeners", enabled: false},
-                                                ],
-                                            };
-                                        });
-                                    }
-                                    // end: Popper
-
-                                    // start: Tab
-                                    document.querySelectorAll("[data-tab]").forEach(function (item) {
-                                        item.addEventListener("click", function (e) {
-                                            e.preventDefault();
-                                            const tab = item.dataset.tab;
-                                            const page = item.dataset.tabPage;
-                                            const target = document.querySelector(
-                                                    '[data-tab-for="' + tab + '"][data-page="' + page + '"]'
-                                                    );
-                                            document
-                                                    .querySelectorAll('[data-tab="' + tab + '"]')
-                                                    .forEach(function (i) {
-                                                        i.classList.remove("active");
-                                                    });
-                                            document
-                                                    .querySelectorAll('[data-tab-for="' + tab + '"]')
-                                                    .forEach(function (i) {
-                                                        i.classList.add("hidden");
-                                                    });
-                                            item.classList.add("active");
-                                            target.classList.remove("hidden");
-                                        });
-                                    });
-                                    // end: Tab
-
-                                    // start: Chart
-                                    new Chart(document.getElementById("order-chart"), {
-                                        type: "line",
-                                        data: {
-                                            labels: generateNDays(7),
-                                            datasets: [
-                                                {
-                                                    label: "Active",
-                                                    data: generateRandomData(7),
-                                                    borderWidth: 1,
-                                                    fill: true,
-                                                    pointBackgroundColor: "rgb(59, 130, 246)",
-                                                    borderColor: "rgb(59, 130, 246)",
-                                                    backgroundColor: "rgb(59 130 246 / .05)",
-                                                    tension: 0.2,
-                                                },
-                                                {
-                                                    label: "Completed",
-                                                    data: generateRandomData(7),
-                                                    borderWidth: 1,
-                                                    fill: true,
-                                                    pointBackgroundColor: "rgb(16, 185, 129)",
-                                                    borderColor: "rgb(16, 185, 129)",
-                                                    backgroundColor: "rgb(16 185 129 / .05)",
-                                                    tension: 0.2,
-                                                },
-                                                {
-                                                    label: "Canceled",
-                                                    data: generateRandomData(7),
-                                                    borderWidth: 1,
-                                                    fill: true,
-                                                    pointBackgroundColor: "rgb(244, 63, 94)",
-                                                    borderColor: "rgb(244, 63, 94)",
-                                                    backgroundColor: "rgb(244 63 94 / .05)",
-                                                    tension: 0.2,
-                                                },
-                                            ],
-                                        },
-                                        options: {
-                                            scales: {
-                                                y: {
-                                                    beginAtZero: true,
+                                // start: Popper
+                                const popperInstance = {};
+                                document.querySelectorAll(".dropdown").forEach(function (item, index) {
+                                    const popperId = "popper-" + index;
+                                    const toggle = item.querySelector(".dropdown-toggle");
+                                    const menu = item.querySelector(".dropdown-menu");
+                                    menu.dataset.popperId = popperId;
+                                    popperInstance[popperId] = Popper.createPopper(toggle, menu, {
+                                        modifiers: [
+                                            {
+                                                name: "offset",
+                                                options: {
+                                                    offset: [0, 8],
                                                 },
                                             },
-                                        },
+                                            {
+                                                name: "preventOverflow",
+                                                options: {
+                                                    padding: 24,
+                                                },
+                                            },
+                                        ],
+                                        placement: "bottom-end",
                                     });
+                                });
+                                document.addEventListener("click", function (e) {
+                                    const toggle = e.target.closest(".dropdown-toggle");
+                                    const menu = e.target.closest(".dropdown-menu");
+                                    if (toggle) {
+                                        const menuEl = toggle
+                                                .closest(".dropdown")
+                                                .querySelector(".dropdown-menu");
+                                        const popperId = menuEl.dataset.popperId;
+                                        if (menuEl.classList.contains("hidden")) {
+                                            hideDropdown();
+                                            menuEl.classList.remove("hidden");
+                                            showPopper(popperId);
+                                        } else {
+                                            menuEl.classList.add("hidden");
+                                            hidePopper(popperId);
+                                        }
+                                    } else if (!menu) {
+                                        hideDropdown();
+                                    }
+                                });
 
-                                    function generateNDays(n) {
-                                        const data = [];
-                                        for (let i = 0; i < n; i++) {
-                                            const date = new Date();
-                                            date.setDate(date.getDate() - i);
-                                            data.push(
-                                                    date.toLocaleString("en-US", {
-                                                        month: "short",
-                                                        day: "numeric",
-                                                    })
-                                                    );
-                                        }
-                                        return data;
+                                function hideDropdown() {
+                                    document.querySelectorAll(".dropdown-menu").forEach(function (item) {
+                                        item.classList.add("hidden");
+                                    });
+                                }
+                                function showPopper(popperId) {
+                                    popperInstance[popperId].setOptions(function (options) {
+                                        return {
+                                            ...options,
+                                            modifiers: [
+                                                ...options.modifiers,
+                                                {name: "eventListeners", enabled: true},
+                                            ],
+                                        };
+                                    });
+                                    popperInstance[popperId].update();
+                                }
+                                function hidePopper(popperId) {
+                                    popperInstance[popperId].setOptions(function (options) {
+                                        return {
+                                            ...options,
+                                            modifiers: [
+                                                ...options.modifiers,
+                                                {name: "eventListeners", enabled: false},
+                                            ],
+                                        };
+                                    });
+                                }
+                                // end: Popper
+
+                                // start: Tab
+                                document.querySelectorAll("[data-tab]").forEach(function (item) {
+                                    item.addEventListener("click", function (e) {
+                                        e.preventDefault();
+                                        const tab = item.dataset.tab;
+                                        const page = item.dataset.tabPage;
+                                        const target = document.querySelector(
+                                                '[data-tab-for="' + tab + '"][data-page="' + page + '"]'
+                                                );
+                                        document
+                                                .querySelectorAll('[data-tab="' + tab + '"]')
+                                                .forEach(function (i) {
+                                                    i.classList.remove("active");
+                                                });
+                                        document
+                                                .querySelectorAll('[data-tab-for="' + tab + '"]')
+                                                .forEach(function (i) {
+                                                    i.classList.add("hidden");
+                                                });
+                                        item.classList.add("active");
+                                        target.classList.remove("hidden");
+                                    });
+                                });
+                                // end: Tab
+
+                                // start: Chart
+                                new Chart(document.getElementById("order-chart"), {
+                                    type: "line",
+                                    data: {
+                                        labels: generateNDays(7),
+                                        datasets: [
+                                            {
+                                                label: "Active",
+                                                data: generateRandomData(7),
+                                                borderWidth: 1,
+                                                fill: true,
+                                                pointBackgroundColor: "rgb(59, 130, 246)",
+                                                borderColor: "rgb(59, 130, 246)",
+                                                backgroundColor: "rgb(59 130 246 / .05)",
+                                                tension: 0.2,
+                                            },
+                                            {
+                                                label: "Completed",
+                                                data: generateRandomData(7),
+                                                borderWidth: 1,
+                                                fill: true,
+                                                pointBackgroundColor: "rgb(16, 185, 129)",
+                                                borderColor: "rgb(16, 185, 129)",
+                                                backgroundColor: "rgb(16 185 129 / .05)",
+                                                tension: 0.2,
+                                            },
+                                            {
+                                                label: "Canceled",
+                                                data: generateRandomData(7),
+                                                borderWidth: 1,
+                                                fill: true,
+                                                pointBackgroundColor: "rgb(244, 63, 94)",
+                                                borderColor: "rgb(244, 63, 94)",
+                                                backgroundColor: "rgb(244 63 94 / .05)",
+                                                tension: 0.2,
+                                            },
+                                        ],
+                                    },
+                                    options: {
+                                        scales: {
+                                            y: {
+                                                beginAtZero: true,
+                                            },
+                                        },
+                                    },
+                                });
+
+                                function generateNDays(n) {
+                                    const data = [];
+                                    for (let i = 0; i < n; i++) {
+                                        const date = new Date();
+                                        date.setDate(date.getDate() - i);
+                                        data.push(
+                                                date.toLocaleString("en-US", {
+                                                    month: "short",
+                                                    day: "numeric",
+                                                })
+                                                );
                                     }
-                                    function generateRandomData(n) {
-                                        const data = [];
-                                        for (let i = 0; i < n; i++) {
-                                            data.push(Math.round(Math.random() * 10));
-                                        }
-                                        return data;
+                                    return data;
+                                }
+                                function generateRandomData(n) {
+                                    const data = [];
+                                    for (let i = 0; i < n; i++) {
+                                        data.push(Math.round(Math.random() * 10));
                                     }
-                                    // end: Chart
+                                    return data;
+                                }
+                                // end: Chart
         </script>
     </body>
 </html>
