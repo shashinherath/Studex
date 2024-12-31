@@ -225,3 +225,16 @@ VALUES
 (2, 2),  -- Student Five enrolled in 10-B
 (7, 2),  -- Student Six enrolled in 10-B
 (8, 3);  -- Student Six enrolled in 10-C
+
+
+
+INSERT INTO Own (teacher_id, class_id)
+VALUES
+(1, 2); 
+
+
+
+INSERT INTO attendance_record (user_id, class_id, date, status)
+VALUES
+(4, 2, '2024-12-28', 'Present'),
+(5, 2, '2024-12-28', 'Absent');

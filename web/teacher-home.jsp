@@ -2,7 +2,8 @@
     Document   : teacher-home
     Created on : Dec 6, 2024, 7:12:45 PM
     Author     : Chamika Niroshan
---%><%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+--%><%@page import="studex.classes.AttendanceHandler"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="studex.classes.SessionValidator" %>
 <%@page import="studex.classes.MyProfile"%>
 <%@ page import="studex.classes.LogoutHandler" %>
@@ -26,6 +27,12 @@
     String user_email = (String) session.getAttribute("email");
     MyProfile profile = new MyProfile();
     String user_name = profile.getMyUserName(user_email);
+    String userID = profile.getMyUserId(user_email);
+    String teacherID = profile.getTeacherId(userID);
+    String classID = profile.getClassId(teacherID);
+
+    AttendanceHandler Attendance = new AttendanceHandler();
+    boolean todayAttendance = Attendance.checkAttendanceMarkStatus(classID);
 %>
 <%
     // Check if the logout action is triggered
@@ -140,7 +147,7 @@
                     <button id="dashboard-tab" class="tab-button block w-full text-left px-6 py-3 hover:bg-purple-100 text-gray-800 text-xs" onclick="displayContent('dashboard', 'dashboard-tab')">
                         <i class="ri-home-2-line mr-3 text-lg"></i>View Student Information
                     </button>
-                    <button id="students-tab" class="tab-button block w-full text-left px-6 py-3 hover:bg-purple-100 text-gray-800 text-xs" onclick="displayContent('students', 'students-tab')">
+                    <button id="attendance-tab" class="tab-button block w-full text-left px-6 py-3 hover:bg-purple-100 text-gray-800 text-xs" onclick="displayContent('attendance', 'attendance-tab')">
                         <i class="ri-user-line mr-3 text-lg"></i>Manage Class Attendance
                     </button>
                     <button id="teachers-tab" class="tab-button block w-full text-left px-6 py-3 hover:bg-purple-100 text-gray-800 text-xs" onclick="displayContent('teachers', 'teachers-tab')">
@@ -182,7 +189,7 @@
                 <div class="flex-1 overflow-y-auto p-6 bg-gray-200">
                     <!-- Dashboard Content -->
                     <div id="dashboard" class="dynamic-content">
-                        <h2 class="text-2xl font-bold text-gray-800">Student Info</h2>
+                        <h2 class="text-2xl font-bold text-gray-800">View Student Information</h2>
                         <div class="p-8">
                             <h1 class="text-3xl font-semibold mb-6">Registered Classes</h1>
 
@@ -323,13 +330,208 @@
                                     document.getElementById('Student-Records').innerHTML = '<p class="text-gray-500">No student found with the given name.</p>';
                                 }
                             }
+
+
+
+
+                            /*-------------------------------------------------------------------------------------------------------*/
+
+
+                            let attendanceStatus = {}; // Object to store attendance status for each student
+                            let classID = "";
+
+                            // Fetch student data by class ID (called when the user clicks on "Mark Attendance")
+                            function fetchStudentInfoForAttendance(classId) {
+                                console.log("Fetching students for class ID:", classId);
+
+                                const studentsContainer = document.getElementById('attendanceFormContainer');
+                                studentsContainer.innerHTML = ''; // Clear previous content
+
+                                // Fetch student data
+                                fetch('getStudentByClassID.jsp?classId=' + classId)
+                                        .then(response => response.json()) // Parse JSON response
+                                        .then(students => {
+                                            console.log("Data received:", students); // Debug log for the received data
+                                            allStudents = students; // Store fetched students globally
+                                            attendanceStatus = {}; // Reset the attendance status object
+                                            displayAttendanceForm(students); // Display the form for marking attendance
+                                        })
+                                        .catch(error => {
+                                            console.error("Error fetching student data:", error);
+                                            studentsContainer.innerHTML = '<p>Error loading students. Please try again later.</p>';
+                                        });
+                            }
+
+                            // Display the table for marking attendance
+                            function displayAttendanceForm(students) {
+                                const studentsContainer = document.getElementById('attendanceFormContainer');
+                                studentsContainer.innerHTML = ''; // Clear previous content
+
+                                if (students.length > 0) {
+                                    const table = document.createElement('table');
+                                    table.classList.add('min-w-full', 'table-auto', 'border-collapse', 'shadow-md', 'border', 'border-gray-200');
+
+                                    const thead = document.createElement('thead');
+                                    thead.classList.add('bg-gray-100');
+                                    thead.innerHTML = `
+                <tr>
+                    <th class="px-4 py-2 border-b text-left">Name</th>
+                    <th class="px-4 py-2 border-b text-left">Attendance</th>
+                </tr>
+            `;
+                                    table.appendChild(thead);
+
+                                    const tbody = document.createElement('tbody');
+
+                                    // Loop through students and add each to the table with buttons for attendance
+                                    students.forEach(student => {
+                                        const tr = document.createElement('tr');
+                                        tr.id = `student-\${student.userId}`; // Add a unique ID for each row to highlight it
+                                        tr.innerHTML = `
+                    <td class="px-4 py-2 border-b text-cyan-600">\${student.name}</td>
+                    <td class="px-4 py-2 border-b">
+                        <button id="present-\${student.userId}" class="bg-green-500 text-white px-4 py-2 rounded" onclick="markAttendanceForStudent('\${student.userId}', 'Present')">Present</button>
+                        <button id="absent-\${student.userId}" class="bg-red-500 text-white px-4 py-2 rounded" onclick="markAttendanceForStudent('\${student.userId}', 'Absent')">Absent</button>
+                    </td>
+                `;
+                                        tbody.appendChild(tr);
+                                    });
+
+                                    table.appendChild(tbody);
+                                    studentsContainer.appendChild(table);
+
+                                    // Add the submit button after the table
+                                    const submitButton = document.createElement('button');
+                                    submitButton.classList.add('mt-4', 'bg-blue-500', 'text-white', 'p-2', 'rounded');
+                                    submitButton.innerText = 'Submit Attendance';
+                                    submitButton.onclick = submitAttendance;
+                                    studentsContainer.appendChild(submitButton);
+                                } else {
+                                    studentsContainer.innerHTML = '<p class="text-gray-500">No students found for this class.</p>';
+                                }
+                            }
+
+                            // Mark attendance for a student (Present or Absent)
+                            function markAttendanceForStudent(studentId, status) {
+                                attendanceStatus[studentId] = status;
+                                // Disable the attendance buttons for this student to prevent further changes
+                                document.getElementById(`present-\${studentId}`).disabled = true;
+                                document.getElementById(`absent-\${studentId}`).disabled = true;
+
+                                // Highlight the student row based on the attendance status
+                                const studentRow = document.getElementById(`student-\${studentId}`);
+                                if (status === 'Present') {
+                                    studentRow.classList.add('bg-green-100'); // Green background for Present
+                                } else if (status === 'Absent') {
+                                    studentRow.classList.add('bg-red-100'); // Red background for Absent
+                                }
+
+                                // Optionally add a checkmark icon or text to show the status
+                                const presentButton = document.getElementById(`present-\${studentId}`);
+                                const absentButton = document.getElementById(`absent-\${studentId}`);
+
+                                if (status === 'Present') {
+                                    presentButton.innerHTML = '✓ Present'; // Add checkmark for Present
+                                } else {
+                                    absentButton.innerHTML = '✓ Absent'; // Add checkmark for Absent
+                                }
+                            }
+
+                            // Submit the attendance to the server
+                            // Submit the attendance to the server
+                            function submitAttendance() {
+                                // Check if all students have marked attendance
+                                if (Object.keys(attendanceStatus).length === allStudents.length) {
+                                    const formData = new FormData();
+                                    formData.append('classId', classID); // Add the class ID to the FormData
+                                    formData.append('date', new Date().toISOString().split('T')[0]); // Add the date in 'YYYY-MM-DD' format
+
+                                    // Add attendance data for each student to the FormData
+                                    for (let studentId in attendanceStatus) {
+                                        formData.append(`attendance[\${studentId}]`, attendanceStatus[studentId]);
+                                    }
+                                    // Log the contents of the FormData
+                                    for (let pair of formData.entries()) {
+                                        console.log(pair[0] + ': ' + pair[1]);
+                                    }
+                                    const urlParams = new URLSearchParams(formData); // Convert FormData to URLSearchParams
+
+                                    fetch('submitAttendance.jsp', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/x-www-form-urlencoded',
+                                        },
+                                        body: urlParams.toString(), // Send as URL-encoded string
+                                    })
+                                            .then(response => response.text()) // Parse JSON response
+
+                                            .catch(error => {
+                                                console.error("Error fetching student data:", error);
+                                            });
+                                } else {
+                                    alert('Please mark attendance for all students before submitting.');
+                                }
+                            }
+
+
+                            // This function gets called when the user clicks the "Mark Attendance" button
+                            function markAttendance(classId) {
+                                classID = classId;
+                                fetchStudentInfoForAttendance(classId);
+                                document.getElementById('attendanceFormContainer').classList.remove('hidden');
+                            }
+
+
+
                         </script>
                     </div>
 
                     <!-- Students Content -->
-                    <div id="students" class="dynamic-content" style="display: none;">
+                    <div id="attendance" class="dynamic-content" style="display: none;">
+                        <h2 class="text-2xl font-bold text-gray-800">Manage Class Attendance</h2>
+                        <p class="mt-4 text-gray-600">Attendance of students.</p>
+                        <div class="mt-6 max-w-sm bg-white p-6 rounded-xl shadow-lg">
+                            <h3 class="text-xl font-semibold text-gray-800">User Details</h3>
+
+                            <!-- User details inside card -->
+                            <div class="mt-4">
+                                <p class="text-gray-600"><strong>User Name:</strong> <%= user_name%></p>
+                                <p class="text-gray-600"><strong>Teacher ID:</strong> <%= teacherID%></p>
+                                <p class="text-gray-600"><strong>Assigned Class ID:</strong> <%= classID%></p>
+                            </div>
+                        </div>
+                        <!-- Attendance Status Message -->
+                        <div class="mt-6 justify-center flex">
+                            <div class="">
+                                <%
+                                    if (todayAttendance) {
+                                %>
+                                <p class="text-green-600 font-semibold ">Attendance has already been marked for today.</p>
+                                <%
+                                } else {
+                                %>
+                                <p class="text-red-600 font-semibold">Attendance has not been marked for today.</p>
+                                <!-- Optional: Call another function or display a message -->
+                                <button class="mt-4 bg-blue-500 text-white p-2 rounded" onclick="markAttendance(<%= classID%>)">Mark Attendance</button>
+                                <%
+                                    }
+                                %>
+                            </div>
+
+                        </div>
+                        <div id="attendanceFormContainer" class="hidden mt-6"></div>
+                    </div>
+                    <div id="teachers" class="dynamic-content" style="display: none;">
                         <h2 class="text-2xl font-bold text-gray-800">Students</h2>
                         <p class="mt-4 text-gray-600">Here is the list of students.</p>
+                    </div>
+                    <div id="subjects" class="dynamic-content" style="display: none;">
+                        <h2 class="text-2xl font-bold text-gray-800">Students</h2>
+                        <p class="mt-4 text-gray-600">subjects</p>
+                    </div>
+                    <div id="classes" class="dynamic-content" style="display: none;">
+                        <h2 class="text-2xl font-bold text-gray-800">Students</h2>
+                        <p class="mt-4 text-gray-600">classes</p>
                     </div>
                 </div>
             </div>
