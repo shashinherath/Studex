@@ -102,7 +102,7 @@ CREATE TABLE Grades (
     user_id INT,
     subject_id INT,
     year INT,
-    semester ENUM('First-Semester', 'Mid-Semester', 'End-Semester'),
+    semester ENUM('FirstSemester', 'MidSemester', 'EndSemester'),
     mark FLOAT NOT NULL,
     FOREIGN KEY (user_id) REFERENCES User(user_id) ON DELETE CASCADE,
     FOREIGN KEY (subject_id) REFERENCES Subject(subject_id) ON DELETE CASCADE
@@ -186,8 +186,8 @@ VALUES
 -- Table: Grades
 INSERT INTO Grades (user_id, subject_id, year, semester, mark)
 VALUES
-(3, 1, 2024, 'First-Semester', 85.5), -- Student One scored 85.5 in Algebra during First Semester
-(4, 2, 2024, 'Mid-Semester', 78.0);  -- Student Two scored 78 in Mechanics during Mid Semester
+(3, 1, 2024, 'FirstSemester', 85.5), -- Student One scored 85.5 in Algebra during First Semester
+(4, 2, 2024, 'MidSemester', 78.0);  -- Student Two scored 78 in Mechanics during Mid Semester
 
 
 
@@ -238,3 +238,59 @@ INSERT INTO attendance_record (user_id, class_id, date, status)
 VALUES
 (4, 2, '2024-12-28', 'Present'),
 (5, 2, '2024-12-28', 'Absent');
+
+
+
+
+
+---------------------------------------------------------------------------
+
+Set subject grades:
+
+
+
+
+
+INSERT INTO Subject (name)
+VALUES
+('Mathematics'),
+('Physics'),
+('Chemistry'),
+('Biology'),
+('History'),
+('Geography');
+
+
+
+-- Replace '6' with the user_id of the student and '3' with the corresponding class_id.
+
+ALTER TABLE Grades MODIFY COLUMN mark ENUM('A', 'B', 'C', 'D', 'F') NOT NULL;
+
+-- Insert grades as letter grades.
+INSERT INTO Grades (user_id, subject_id, year, semester, mark)
+VALUES
+(6, 1, 2024, 'FirstSemester', 'A'), -- Mathematics
+(6, 2, 2024, 'FirstSemester', 'A'), -- Physics
+(6, 3, 2024, 'FirstSemester', 'A'), -- Chemistry
+(6, 4, 2024, 'FirstSemester', 'A'), -- Biology
+(6, 5, 2024, 'FirstSemester', 'A'), -- History
+(6, 6, 2024, 'FirstSemester', 'A'); -- Geography
+
+
+
+-- Check added subjects.
+SELECT * FROM Subject;
+
+-- Check grades for the student.
+SELECT 
+    Grades.*,
+    Subject.name AS name
+FROM 
+    Grades
+JOIN 
+    Subject
+ON 
+    Grades.subject_id = Subject.subject_id
+WHERE 
+    Grades.user_id = 6 AND year = 2024;
+

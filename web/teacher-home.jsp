@@ -480,6 +480,310 @@
                                 fetchStudentInfoForAttendance(classId);
                                 document.getElementById('attendanceFormContainer').classList.remove('hidden');
                             }
+                            function fetchStudentInfo_2(classId, year, className) {
+                                const studentsContainer = document.getElementById('students-container-for-results');
+                                studentsContainer.innerHTML = ''; // Clear previous content
+
+                                // Fetch student data
+                                fetch(`getStudentByClassID.jsp?classId=\${classId}`)
+                                        .then(response => response.json()) // Parse JSON response
+                                        .then(students => {
+                                            console.log("Data received:", students); // Debug log for the received data
+                                            allStudents = students; // Store fetched students globally
+                                            displayStudents_2(students, classId, year, className); // Pass classId and year to the function
+                                        })
+                                        .catch(error => {
+                                            console.error("Error fetching student data:", error);
+                                            studentsContainer.innerHTML = '<p>Error loading students. Please try again later.</p>';
+                                        });
+                            }
+
+                            function displayStudents_2(students, classId, year, className) {
+                                const studentsContainer = document.getElementById('students-container-for-results');
+                                studentsContainer.innerHTML = ''; // Clear previous content
+
+                                // Add class name at the top
+                                const classNameHeading = document.createElement('h3');
+                                classNameHeading.classList.add('text-2xl', 'font-bold', 'mb-4', 'text-gray-800');
+                                classNameHeading.textContent = `Class: \${className}`;
+                                studentsContainer.appendChild(classNameHeading);
+
+                                if (students.length > 0) {
+                                    // Create a table element
+                                    const table = document.createElement('table');
+                                    table.classList.add('min-w-full', 'table-auto', 'border-collapse', 'shadow-md', 'border', 'border-gray-200');
+
+                                    // Create the table header
+                                    const thead = document.createElement('thead');
+                                    thead.classList.add('bg-gray-100');
+                                    thead.innerHTML = `
+            <tr>
+                <th class="px-4 py-2 border-b text-left">Name</th>
+                <th class="px-4 py-2 border-b text-left">Actions</th>
+            </tr>
+        `;
+                                    table.appendChild(thead);
+
+                                    // Create the table body
+                                    const tbody = document.createElement('tbody');
+
+                                    // Loop through students and add each to the table
+                                    students.forEach(student => {
+                                        const tr = document.createElement('tr');
+                                        tr.classList.add('hover:bg-gray-50');
+
+                                        tr.innerHTML = `
+                <td class="px-4 py-2 border-b text-cyan-600">\${student.name}</td>
+                <td class="px-4 py-2 border-b">
+                    <div class="flex space-x-4">
+                        <button 
+                            class="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600"
+                            onclick="viewStudentResults('\${student.name}', '\${classId}', '\${year}', '\${student.userId}')">
+                            View Results
+                        </button>
+                        <button 
+                            class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
+                            onclick="enterNewResult('\${student.name}', '\${classId}', '\${year}', '\${student.userId}')">
+                            Enter New Result
+                        </button>
+                    </div>
+                </td>
+            `;
+                                        tbody.appendChild(tr);
+                                    });
+
+                                    table.appendChild(tbody);
+                                    studentsContainer.appendChild(table);
+                                } else {
+                                    studentsContainer.innerHTML = '<p class="text-gray-500">No students found for this class.</p>';
+                                }
+                            }
+
+
+
+                            function viewStudentResults(studentName, classId, year, userId) {
+                                // Fetch results from the JSP page
+                                fetch(`fetchStudentResults.jsp?userId=\${userId}&year=\${year}`)
+                                        .then(response => response.json())
+                                        .then(results => {
+                                            // Call a function to display the results
+                                            displayStudentResults(results, studentName);
+                                        })
+                                        .catch(error => {
+                                            console.error('Error fetching student results:', error);
+                                        });
+                            }
+                            function displayStudentResults(results, studentName) {
+                                const resultsContainer = document.getElementById('students-container-for-results-2');
+                                resultsContainer.innerHTML = ''; // Clear previous content
+
+                                // Add a heading
+                                const heading = document.createElement('h3');
+                                heading.classList.add('text-2xl', 'font-bold', 'mb-4', 'text-gray-800');
+                                heading.textContent = `Results for: \${studentName}`;
+                                resultsContainer.appendChild(heading);
+
+                                if (results.length > 0) {
+                                    // Create a table
+                                    const table = document.createElement('table');
+                                    table.classList.add('min-w-full', 'table-auto', 'border-collapse', 'shadow-md', 'border', 'border-gray-200');
+
+                                    // Table header
+                                    table.innerHTML = `
+            <thead class="bg-gray-100">
+                <tr>
+                    <th class="px-4 py-2 border-b">Subject</th>
+                    <th class="px-4 py-2 border-b">Year</th>
+                    <th class="px-4 py-2 border-b">Semester</th>
+                    <th class="px-4 py-2 border-b">Grade</th>
+                </tr>
+            </thead>
+        `;
+
+                                    // Table body
+                                    const tbody = document.createElement('tbody');
+                                    results.forEach(result => {
+                                        const row = document.createElement('tr');
+                                        row.classList.add('hover:bg-gray-50');
+
+                                        row.innerHTML = `
+                <td class="px-4 py-2 border-b">\${result.subjectName}</td>
+                <td class="px-4 py-2 border-b">\${result.year}</td>
+                <td class="px-4 py-2 border-b">\${result.semester}</td>
+                <td class="px-4 py-2 border-b">\${result.grade}</td>
+            `;
+                                        tbody.appendChild(row);
+                                    });
+
+                                    table.appendChild(tbody);
+                                    resultsContainer.appendChild(table);
+                                } else {
+                                    resultsContainer.innerHTML = '<p class="text-gray-500">No results found for this student.</p>';
+                                }
+                            }
+
+
+
+                            // Function to display the form for entering new results
+                            function enterNewResult(studentName, classId, year, userId) {
+
+                                // Create the form and table for subject selection and input
+                                let container = document.getElementById("students-container-for-results-2");
+                                container.innerHTML = ""; // Clear the container before adding new rows
+
+                                // Add a heading
+                                const heading = document.createElement('h3');
+                                heading.classList.add('text-2xl', 'font-bold', 'mb-4', 'text-gray-800');
+                                heading.textContent = `Add Results for: \${studentName}`;
+                                container.appendChild(heading);
+                                
+                                // Create the semester dropdown
+                                let semesterLabel = document.createElement('label');
+                                semesterLabel.textContent = "Select Semester: ";
+                                semesterLabel.classList.add('block', 'text-lg', 'font-semibold', 'mb-2');
+                                let semesterSelect = document.createElement('select');
+                                semesterSelect.id = "semester-select";
+                                semesterSelect.required = true;
+                                semesterSelect.classList.add('block', 'w-full', 'p-2', 'mb-4', 'border', 'border-gray-300', 'rounded-md', 'focus:outline-none', 'focus:ring-2', 'focus:ring-blue-500');
+
+                                // Populate the semester dropdown
+                                let semesters = ["First-Semester", "Mid-Semester", "End-Semester"];
+                                semesters.forEach((semester, index) => {
+                                    let option = document.createElement('option');
+                                    option.value = semester;
+                                    option.textContent = semester;
+                                    semesterSelect.appendChild(option);
+                                });
+
+                                // Append the semester label and dropdown to the container
+                                container.appendChild(semesterLabel);
+                                container.appendChild(semesterSelect);
+
+                                // Create table for subjects and marks
+                                let table = document.createElement('table');
+                                table.classList.add('min-w-full', 'mt-6', 'border-collapse', 'table-auto');
+
+                                let header = table.createTHead();
+                                let headerRow = header.insertRow();
+                                headerRow.classList.add('bg-gray-200');
+                                headerRow.insertCell().textContent = "Subject Name";
+                                headerRow.insertCell().textContent = "Marks (Required)";
+
+                                // List of subjects to pre-fill
+                                let subjects = [
+                                    {id: 1, name: "Mathematics"},
+                                    {id: 2, name: "Physics"},
+                                    {id: 3, name: "Chemistry"},
+                                    {id: 4, name: "Biology"},
+                                    {id: 5, name: "History"},
+                                    {id: 6, name: "Geography"}
+                                ];
+
+                                let tbody = table.createTBody();
+
+                                // Populate the table with subjects and marks dropdowns
+                                subjects.forEach((subject) => {
+                                    let row = tbody.insertRow();
+
+                                    // Subject Name (Pre-filled)
+                                    let subjectCell = row.insertCell();
+                                    subjectCell.textContent = subject.name;
+                                    subjectCell.classList.add('px-4', 'py-2', 'border', 'border-gray-300', 'text-left');
+
+                                    // Marks (Required dropdown)
+                                    let marksCell = row.insertCell();
+                                    let marksSelect = document.createElement('select');
+                                    marksSelect.id = `marks-\${subject.id}`; // Unique id for each subject
+                                    marksSelect.required = true;
+                                    marksSelect.classList.add('block', 'w-full', 'p-2', 'mt-2', 'border', 'border-gray-300', 'rounded-md', 'focus:outline-none', 'focus:ring-2', 'focus:ring-blue-500');
+
+                                    // Define marks dropdown options
+                                    let marksOptions = ["A", "B", "C", "D", "F"];
+                                    marksOptions.forEach((mark) => {
+                                        let option = document.createElement('option');
+                                        option.value = mark;
+                                        option.textContent = mark;
+                                        marksSelect.appendChild(option);
+                                    });
+
+                                    marksCell.appendChild(marksSelect);
+                                });
+
+                                // Append the table to the container
+                                container.appendChild(table);
+
+                                // Create the submit button
+                                let submitButton = document.createElement('button');
+                                submitButton.textContent = "Submit Results";
+                                submitButton.classList.add('mt-6', 'px-6', 'py-3', 'bg-blue-500', 'text-white', 'font-semibold', 'rounded-lg', 'hover:bg-blue-600', 'focus:outline-none', 'focus:ring-2', 'focus:ring-blue-500');
+                                submitButton.onclick = function () {
+                                    submitResults(classId, year, userId);
+                                };
+                                container.appendChild(submitButton);
+                            }
+
+// Submit function remains the same, no changes required here
+
+                            function submitResults(classId, year, userId) {
+                                let semester = document.getElementById("semester-select").value;
+                                let subjects = [
+                                    {id: 1, name: "Mathematics"},
+                                    {id: 2, name: "Physics"},
+                                    {id: 3, name: "Chemistry"},
+                                    {id: 4, name: "Biology"},
+                                    {id: 5, name: "History"},
+                                    {id: 6, name: "Geography"}
+                                ];
+
+                                let results = [];
+
+                                // Loop through each subject and get the selected marks
+                                subjects.forEach(subject => {
+                                    let marks = document.getElementById(`marks-\${subject.id}`).value;
+
+                                    // If marks are not selected, alert the user and stop further submission
+                                    if (!marks) {
+                                        alert(`Please select marks for \${subject.name}`);
+                                        return;
+                                    }
+
+                                    results.push({
+                                        subjectId: subject.id,
+                                        subjectName: subject.name,
+                                        semester: semester,
+                                        marks: marks,
+                                        userId: userId,
+                                        year: year
+                                    });
+                                });
+
+                                // If results array is empty (due to early return in case of missing marks), do not proceed
+                                if (results.length === 0) {
+                                    return; // Prevent sending empty results
+                                }
+
+                                // Send the results to `updateStudentResults.jsp`
+                                fetch('updateStudentResults.jsp', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    },
+                                    body: JSON.stringify(results)
+                                })
+                                        .then(response => response.json())
+                                        .then(data => {
+                                            alert('Results submitted successfully');
+                                            // Optionally, handle success response (e.g., show a success message or redirect)
+                                        })
+                                        .catch(error => {
+                                            alert('Error submitting results');
+                                            console.error(error);
+                                        });
+                            }
+
+
+
+
 
 
 
@@ -521,10 +825,36 @@
                         </div>
                         <div id="attendanceFormContainer" class="hidden mt-6"></div>
                     </div>
+
                     <div id="teachers" class="dynamic-content" style="display: none;">
-                        <h2 class="text-2xl font-bold text-gray-800">Students</h2>
-                        <p class="mt-4 text-gray-600">Here is the list of students.</p>
+                        <h2 class="text-2xl font-bold text-gray-800">View and Enter Grades</h2>
+                        <div class="p-8">
+                            <h1 class="text-3xl font-semibold mb-6">Registered Classes</h1>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                                <% for (ClassModel classModel : classes) {%>
+                                <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+                                    <div class="p-6">
+                                        <h2 class="text-xl font-semibold mb-2"><%= classModel.getClassName()%></h2>
+                                        <p class="text-gray-600">Year: <%= classModel.getYear()%></p>
+                                    </div>
+                                    <div class="px-6 py-4 bg-gray-50 text-center">
+                                        <button 
+                                            data-class-id="<%= classModel.getClassId()%>" 
+                                            data-class-year="<%= classModel.getYear()%>"
+                                            class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
+                                            onclick="fetchStudentInfo_2('<%= classModel.getClassId()%>', '<%= classModel.getYear()%>', '<%= classModel.getClassName()%>')">
+                                            View Students
+                                        </button>
+                                    </div>
+                                </div>
+                                <% }%>
+                            </div>
+                        </div>
+                        <div id="students-container-for-results"></div>
+                        <div id="students-container-for-results-2"class="mt-5"></div>
                     </div>
+
                     <div id="subjects" class="dynamic-content" style="display: none;">
                         <h2 class="text-2xl font-bold text-gray-800">Students</h2>
                         <p class="mt-4 text-gray-600">subjects</p>
