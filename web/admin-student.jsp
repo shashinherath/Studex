@@ -2,6 +2,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ page import="studex.classes.SessionValidator" %>
 <%@ page import="studex.classes.ManageAdminStudent, java.util.List, studex.classes.Student" %>
+<%@ page import="studex.classes.LogoutHandler" %>
 <%
     // Perform session validation
     boolean isValidSession = SessionValidator.isSessionValid(request);
@@ -27,8 +28,9 @@
         String email = request.getParameter("email");
         String phoneNo = request.getParameter("phone_no");
         String password = request.getParameter("password");
+        String clasName = request.getParameter("classname");
         String userType = "Student";
-        message = manager.addStudent(name, email, phoneNo, password, userType);
+        message = manager.addStudent(name, email, phoneNo, password, userType, clasName);
     } else if ("delete".equals(action)) {
         int userId = Integer.parseInt(request.getParameter("user_id"));
         message = manager.deleteStudent(userId);
@@ -45,6 +47,7 @@
         json += "\"name\":\"" + student.getName() + "\",";
         json += "\"email\":\"" + student.getEmail() + "\",";
         json += "\"phoneNo\":\"" + student.getPhoneNo() + "\",";
+        json += "\"className\":\"" + student.getClassName()+ "\",";
         json += "\"enrollDate\":\"" + student.getEnrollDate() + "\"";
         json += "}";
         response.setContentType("application/json");
@@ -56,13 +59,23 @@
         String email = request.getParameter("email");
         String phoneNo = request.getParameter("phone_no");
         String enrollDate = request.getParameter("enrollDate");
+        String className = request.getParameter("classname");
         String password = request.getParameter("password");
 
         // Update student details
-        message = manager.updateStudent(userId, name, email, phoneNo, enrollDate, password);
+        message = manager.updateStudent(userId, name, email, phoneNo, enrollDate, className, password);
     }
 
     List<Student> students = manager.getAllStudents();
+
+    //logout 
+    if ("logout".equals(action)) {
+        // Invoke the LogoutHandler to clear session data
+        LogoutHandler.logout(session);
+
+        // Redirect to the login page after logout
+        response.sendRedirect("index.jsp");
+    }
 %>
 <!DOCTYPE html>
 <html lang="en">
@@ -210,17 +223,22 @@
                             </li>
 
                             <li>
-                                <form method="POST" action="">
-                                    <a
-                                        role="menuitem"
-                                        class="flex items-center text-[13px] py-1.5 px-4 text-gray-600 hover:text-[#f84525] hover:bg-gray-50 cursor-pointer"
-                                        onclick="event.preventDefault();
-                                                this.closest('form').submit();"
-                                        >
-                                        Log Out
-                                    </a>
-                                </form>
+                                <a
+                                    role="menuitem"
+                                    id="Logout-button"
+                                    class="flex items-center text-[13px] py-1.5 px-4 text-gray-600 hover:text-[#f84525] hover:bg-gray-50 cursor-pointer"
+                                    >
+                                    Log Out
+                                </a>
                             </li>
+                            <script>
+                                const logoutButton = document.getElementById("Logout-button");
+
+                                logoutButton.addEventListener("click", () => {
+                                    // Redirect to the same page with a logout action
+                                    window.location.href = 'admin-home.jsp?action=logout';
+                                });
+                            </script>
                         </ul>
                     </li>
                 </ul>
@@ -249,6 +267,7 @@
                                 <th class="px-4 py-2">Name</th>
                                 <th class="px-4 py-2">Email</th>
                                 <th class="px-4 py-2">Phone</th>
+                                <th class="px-4 py-2">Class</th>
                                 <th class="px-4 py-2">Enrollment Date</th>
                                 <th class="px-4 py-2"></th>
                                 <th class="px-4 py-2"></th>
@@ -260,6 +279,7 @@
                                 <td class="border px-4 py-2"><%= student.getName()%></td>
                                 <td class="border px-4 py-2"><%= student.getEmail()%></td>
                                 <td class="border px-4 py-2"><%= student.getPhoneNo()%></td>
+                                <td class="border px-4 py-2"><%= student.getClassName()%></td>
                                 <td class="border px-4 py-2"><%= student.getEnrollDate()%></td>
                                 <td class="border px-4 py-2">
                                     <form method="post" style="display:inline;" onsubmit="openUpdateModal(<%= student.getUserId()%>)">
@@ -301,6 +321,10 @@
                             <input type="text" name="phone_no" class="border rounded w-full px-3 py-2">
                         </div>
                         <div class="mb-4">
+                            <label class="block text-gray-700">Class</label>
+                            <input type="text" name="classname" class="border rounded w-full px-3 py-2">
+                        </div>
+                        <div class="mb-4">
                             <label class="block text-gray-700">Password</label>
                             <input type="password" name="password" class="border rounded w-full px-3 py-2">
                         </div>
@@ -330,6 +354,10 @@
                             <input type="text" name="phone_no" id="update_phone_no" class="border rounded w-full px-3 py-2">
                         </div>
                         <div class="mb-4">
+                            <label class="block text-gray-700">Class</label>
+                            <input type="text" name="classname" id="update_classname" class="border rounded w-full px-3 py-2">
+                        </div>
+                        <div class="mb-4">
                             <label class="block text-gray-700">Enroll Date</label>
                             <input type="text" name="enrollDate" id="update_enrollDate" class="border rounded w-full px-3 py-2">
                         </div>
@@ -350,227 +378,228 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
-                                // start: Sidebar
-                                const sidebarToggle = document.querySelector(".sidebar-toggle");
-                                const sidebarOverlay = document.querySelector(".sidebar-overlay");
-                                const sidebarMenu = document.querySelector(".sidebar-menu");
-                                const main = document.querySelector(".main");
-                                sidebarToggle.addEventListener("click", function (e) {
-                                    e.preventDefault();
-                                    main.classList.toggle("active");
-                                    sidebarOverlay.classList.toggle("hidden");
-                                    sidebarMenu.classList.toggle("-translate-x-full");
-                                });
-                                sidebarOverlay.addEventListener("click", function (e) {
-                                    e.preventDefault();
-                                    main.classList.add("active");
-                                    sidebarOverlay.classList.add("hidden");
-                                    sidebarMenu.classList.add("-translate-x-full");
-                                });
-                                document
-                                        .querySelectorAll(".sidebar-dropdown-toggle")
-                                        .forEach(function (item) {
-                                            item.addEventListener("click", function (e) {
-                                                e.preventDefault();
-                                                const parent = item.closest(".group");
-                                                if (parent.classList.contains("selected")) {
-                                                    parent.classList.remove("selected");
-                                                } else {
-                                                    document
-                                                            .querySelectorAll(".sidebar-dropdown-toggle")
-                                                            .forEach(function (i) {
-                                                                i.closest(".group").classList.remove("selected");
-                                                            });
-                                                    parent.classList.add("selected");
-                                                }
-                                            });
+                            // start: Sidebar
+                            const sidebarToggle = document.querySelector(".sidebar-toggle");
+                            const sidebarOverlay = document.querySelector(".sidebar-overlay");
+                            const sidebarMenu = document.querySelector(".sidebar-menu");
+                            const main = document.querySelector(".main");
+                            sidebarToggle.addEventListener("click", function (e) {
+                                e.preventDefault();
+                                main.classList.toggle("active");
+                                sidebarOverlay.classList.toggle("hidden");
+                                sidebarMenu.classList.toggle("-translate-x-full");
+                            });
+                            sidebarOverlay.addEventListener("click", function (e) {
+                                e.preventDefault();
+                                main.classList.add("active");
+                                sidebarOverlay.classList.add("hidden");
+                                sidebarMenu.classList.add("-translate-x-full");
+                            });
+                            document
+                                    .querySelectorAll(".sidebar-dropdown-toggle")
+                                    .forEach(function (item) {
+                                        item.addEventListener("click", function (e) {
+                                            e.preventDefault();
+                                            const parent = item.closest(".group");
+                                            if (parent.classList.contains("selected")) {
+                                                parent.classList.remove("selected");
+                                            } else {
+                                                document
+                                                        .querySelectorAll(".sidebar-dropdown-toggle")
+                                                        .forEach(function (i) {
+                                                            i.closest(".group").classList.remove("selected");
+                                                        });
+                                                parent.classList.add("selected");
+                                            }
                                         });
-                                // end: Sidebar
+                                    });
+                            // end: Sidebar
 
-                                // start: Popper
-                                const popperInstance = {};
-                                document.querySelectorAll(".dropdown").forEach(function (item, index) {
-                                    const popperId = "popper-" + index;
-                                    const toggle = item.querySelector(".dropdown-toggle");
-                                    const menu = item.querySelector(".dropdown-menu");
-                                    menu.dataset.popperId = popperId;
-                                    popperInstance[popperId] = Popper.createPopper(toggle, menu, {
-                                        modifiers: [
-                                            {
-                                                name: "offset",
-                                                options: {
-                                                    offset: [0, 8],
-                                                },
-                                            },
-                                            {
-                                                name: "preventOverflow",
-                                                options: {
-                                                    padding: 24,
-                                                },
-                                            },
-                                        ],
-                                        placement: "bottom-end",
-                                    });
-                                });
-                                document.addEventListener("click", function (e) {
-                                    const toggle = e.target.closest(".dropdown-toggle");
-                                    const menu = e.target.closest(".dropdown-menu");
-                                    if (toggle) {
-                                        const menuEl = toggle
-                                                .closest(".dropdown")
-                                                .querySelector(".dropdown-menu");
-                                        const popperId = menuEl.dataset.popperId;
-                                        if (menuEl.classList.contains("hidden")) {
-                                            hideDropdown();
-                                            menuEl.classList.remove("hidden");
-                                            showPopper(popperId);
-                                        } else {
-                                            menuEl.classList.add("hidden");
-                                            hidePopper(popperId);
-                                        }
-                                    } else if (!menu) {
-                                        hideDropdown();
-                                    }
-                                });
-
-                                function hideDropdown() {
-                                    document.querySelectorAll(".dropdown-menu").forEach(function (item) {
-                                        item.classList.add("hidden");
-                                    });
-                                }
-                                function showPopper(popperId) {
-                                    popperInstance[popperId].setOptions(function (options) {
-                                        return {
-                                            ...options,
-                                            modifiers: [
-                                                ...options.modifiers,
-                                                {name: "eventListeners", enabled: true},
-                                            ],
-                                        };
-                                    });
-                                    popperInstance[popperId].update();
-                                }
-                                function hidePopper(popperId) {
-                                    popperInstance[popperId].setOptions(function (options) {
-                                        return {
-                                            ...options,
-                                            modifiers: [
-                                                ...options.modifiers,
-                                                {name: "eventListeners", enabled: false},
-                                            ],
-                                        };
-                                    });
-                                }
-                                // end: Popper
-
-                                // start: Tab
-                                document.querySelectorAll("[data-tab]").forEach(function (item) {
-                                    item.addEventListener("click", function (e) {
-                                        e.preventDefault();
-                                        const tab = item.dataset.tab;
-                                        const page = item.dataset.tabPage;
-                                        const target = document.querySelector(
-                                                '[data-tab-for="' + tab + '"][data-page="' + page + '"]'
-                                                );
-                                        document
-                                                .querySelectorAll('[data-tab="' + tab + '"]')
-                                                .forEach(function (i) {
-                                                    i.classList.remove("active");
-                                                });
-                                        document
-                                                .querySelectorAll('[data-tab-for="' + tab + '"]')
-                                                .forEach(function (i) {
-                                                    i.classList.add("hidden");
-                                                });
-                                        item.classList.add("active");
-                                        target.classList.remove("hidden");
-                                    });
-                                });
-                                // end: Tab
-
-                                // start: Chart
-                                new Chart(document.getElementById("order-chart"), {
-                                    type: "line",
-                                    data: {
-                                        labels: generateNDays(7),
-                                        datasets: [
-                                            {
-                                                label: "Active",
-                                                data: generateRandomData(7),
-                                                borderWidth: 1,
-                                                fill: true,
-                                                pointBackgroundColor: "rgb(59, 130, 246)",
-                                                borderColor: "rgb(59, 130, 246)",
-                                                backgroundColor: "rgb(59 130 246 / .05)",
-                                                tension: 0.2,
-                                            },
-                                            {
-                                                label: "Completed",
-                                                data: generateRandomData(7),
-                                                borderWidth: 1,
-                                                fill: true,
-                                                pointBackgroundColor: "rgb(16, 185, 129)",
-                                                borderColor: "rgb(16, 185, 129)",
-                                                backgroundColor: "rgb(16 185 129 / .05)",
-                                                tension: 0.2,
-                                            },
-                                            {
-                                                label: "Canceled",
-                                                data: generateRandomData(7),
-                                                borderWidth: 1,
-                                                fill: true,
-                                                pointBackgroundColor: "rgb(244, 63, 94)",
-                                                borderColor: "rgb(244, 63, 94)",
-                                                backgroundColor: "rgb(244 63 94 / .05)",
-                                                tension: 0.2,
-                                            },
-                                        ],
-                                    },
-                                    options: {
-                                        scales: {
-                                            y: {
-                                                beginAtZero: true,
+                            // start: Popper
+                            const popperInstance = {};
+                            document.querySelectorAll(".dropdown").forEach(function (item, index) {
+                                const popperId = "popper-" + index;
+                                const toggle = item.querySelector(".dropdown-toggle");
+                                const menu = item.querySelector(".dropdown-menu");
+                                menu.dataset.popperId = popperId;
+                                popperInstance[popperId] = Popper.createPopper(toggle, menu, {
+                                    modifiers: [
+                                        {
+                                            name: "offset",
+                                            options: {
+                                                offset: [0, 8],
                                             },
                                         },
-                                    },
+                                        {
+                                            name: "preventOverflow",
+                                            options: {
+                                                padding: 24,
+                                            },
+                                        },
+                                    ],
+                                    placement: "bottom-end",
                                 });
-
-                                function generateNDays(n) {
-                                    const data = [];
-                                    for (let i = 0; i < n; i++) {
-                                        const date = new Date();
-                                        date.setDate(date.getDate() - i);
-                                        data.push(
-                                                date.toLocaleString("en-US", {
-                                                    month: "short",
-                                                    day: "numeric",
-                                                })
-                                                );
+                            });
+                            document.addEventListener("click", function (e) {
+                                const toggle = e.target.closest(".dropdown-toggle");
+                                const menu = e.target.closest(".dropdown-menu");
+                                if (toggle) {
+                                    const menuEl = toggle
+                                            .closest(".dropdown")
+                                            .querySelector(".dropdown-menu");
+                                    const popperId = menuEl.dataset.popperId;
+                                    if (menuEl.classList.contains("hidden")) {
+                                        hideDropdown();
+                                        menuEl.classList.remove("hidden");
+                                        showPopper(popperId);
+                                    } else {
+                                        menuEl.classList.add("hidden");
+                                        hidePopper(popperId);
                                     }
-                                    return data;
+                                } else if (!menu) {
+                                    hideDropdown();
                                 }
-                                function generateRandomData(n) {
-                                    const data = [];
-                                    for (let i = 0; i < n; i++) {
-                                        data.push(Math.round(Math.random() * 10));
-                                    }
-                                    return data;
-                                }
-                                // end: Chart
+                            });
 
-                                function openUpdateModal(userId) {
-                                    event.preventDefault();
-                                    fetch('admin-student.jsp?action=getStudent&user_id=' + userId)
-                                            .then(response => response.json())
-                                            .then(data => {
-                                                document.getElementById('update_user_id').value = data.userId;
-                                                document.getElementById('update_name').value = data.name;
-                                                document.getElementById('update_email').value = data.email;
-                                                document.getElementById('update_phone_no').value = data.phoneNo;
-                                                document.getElementById('update_enrollDate').value = data.enrollDate;
-                                                document.getElementById('updateModal').classList.remove('hidden');
+                            function hideDropdown() {
+                                document.querySelectorAll(".dropdown-menu").forEach(function (item) {
+                                    item.classList.add("hidden");
+                                });
+                            }
+                            function showPopper(popperId) {
+                                popperInstance[popperId].setOptions(function (options) {
+                                    return {
+                                        ...options,
+                                        modifiers: [
+                                            ...options.modifiers,
+                                            {name: "eventListeners", enabled: true},
+                                        ],
+                                    };
+                                });
+                                popperInstance[popperId].update();
+                            }
+                            function hidePopper(popperId) {
+                                popperInstance[popperId].setOptions(function (options) {
+                                    return {
+                                        ...options,
+                                        modifiers: [
+                                            ...options.modifiers,
+                                            {name: "eventListeners", enabled: false},
+                                        ],
+                                    };
+                                });
+                            }
+                            // end: Popper
+
+                            // start: Tab
+                            document.querySelectorAll("[data-tab]").forEach(function (item) {
+                                item.addEventListener("click", function (e) {
+                                    e.preventDefault();
+                                    const tab = item.dataset.tab;
+                                    const page = item.dataset.tabPage;
+                                    const target = document.querySelector(
+                                            '[data-tab-for="' + tab + '"][data-page="' + page + '"]'
+                                            );
+                                    document
+                                            .querySelectorAll('[data-tab="' + tab + '"]')
+                                            .forEach(function (i) {
+                                                i.classList.remove("active");
                                             });
+                                    document
+                                            .querySelectorAll('[data-tab-for="' + tab + '"]')
+                                            .forEach(function (i) {
+                                                i.classList.add("hidden");
+                                            });
+                                    item.classList.add("active");
+                                    target.classList.remove("hidden");
+                                });
+                            });
+                            // end: Tab
+
+                            // start: Chart
+                            new Chart(document.getElementById("order-chart"), {
+                                type: "line",
+                                data: {
+                                    labels: generateNDays(7),
+                                    datasets: [
+                                        {
+                                            label: "Active",
+                                            data: generateRandomData(7),
+                                            borderWidth: 1,
+                                            fill: true,
+                                            pointBackgroundColor: "rgb(59, 130, 246)",
+                                            borderColor: "rgb(59, 130, 246)",
+                                            backgroundColor: "rgb(59 130 246 / .05)",
+                                            tension: 0.2,
+                                        },
+                                        {
+                                            label: "Completed",
+                                            data: generateRandomData(7),
+                                            borderWidth: 1,
+                                            fill: true,
+                                            pointBackgroundColor: "rgb(16, 185, 129)",
+                                            borderColor: "rgb(16, 185, 129)",
+                                            backgroundColor: "rgb(16 185 129 / .05)",
+                                            tension: 0.2,
+                                        },
+                                        {
+                                            label: "Canceled",
+                                            data: generateRandomData(7),
+                                            borderWidth: 1,
+                                            fill: true,
+                                            pointBackgroundColor: "rgb(244, 63, 94)",
+                                            borderColor: "rgb(244, 63, 94)",
+                                            backgroundColor: "rgb(244 63 94 / .05)",
+                                            tension: 0.2,
+                                        },
+                                    ],
+                                },
+                                options: {
+                                    scales: {
+                                        y: {
+                                            beginAtZero: true,
+                                        },
+                                    },
+                                },
+                            });
+
+                            function generateNDays(n) {
+                                const data = [];
+                                for (let i = 0; i < n; i++) {
+                                    const date = new Date();
+                                    date.setDate(date.getDate() - i);
+                                    data.push(
+                                            date.toLocaleString("en-US", {
+                                                month: "short",
+                                                day: "numeric",
+                                            })
+                                            );
                                 }
+                                return data;
+                            }
+                            function generateRandomData(n) {
+                                const data = [];
+                                for (let i = 0; i < n; i++) {
+                                    data.push(Math.round(Math.random() * 10));
+                                }
+                                return data;
+                            }
+                            // end: Chart
+
+                            function openUpdateModal(userId) {
+                                event.preventDefault();
+                                fetch('admin-student.jsp?action=getStudent&user_id=' + userId)
+                                        .then(response => response.json())
+                                        .then(data => {
+                                            document.getElementById('update_user_id').value = data.userId;
+                                            document.getElementById('update_name').value = data.name;
+                                            document.getElementById('update_email').value = data.email;
+                                            document.getElementById('update_phone_no').value = data.phoneNo;
+                                            document.getElementById('update_classname').value = data.className;
+                                            document.getElementById('update_enrollDate').value = data.enrollDate;
+                                            document.getElementById('updateModal').classList.remove('hidden');
+                                        });
+                            }
     </script>
 </body>
 </html>
