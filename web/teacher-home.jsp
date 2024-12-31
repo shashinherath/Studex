@@ -156,9 +156,6 @@
                     <button id="subjects-tab" class="tab-button block w-full text-left px-6 py-3 hover:bg-purple-100 text-gray-800 text-xs" onclick="displayContent('subjects', 'subjects-tab')">
                         <i class="ri-book-line mr-3 text-lg"></i>Review Student Performance
                     </button>
-                    <button id="classes-tab" class="tab-button block w-full text-left px-6 py-3 hover:bg-purple-100 text-gray-800 text-xs" onclick="displayContent('classes', 'classes-tab')">
-                        <i class="ri-graduation-cap-line mr-3 text-lg"></i>Classes
-                    </button>
                 </nav>
             </div>
 
@@ -464,6 +461,12 @@
                                         body: urlParams.toString(), // Send as URL-encoded string
                                     })
                                             .then(response => response.text()) // Parse JSON response
+                                            .then(data => {
+                                                alert('Attendance submitted successfully');
+                                                location.reload();
+
+                                                // Optionally, handle success response (e.g., show a success message or redirect)
+                                            })
 
                                             .catch(error => {
                                                 console.error("Error fetching student data:", error);
@@ -636,7 +639,7 @@
                                 heading.classList.add('text-2xl', 'font-bold', 'mb-4', 'text-gray-800');
                                 heading.textContent = `Add Results for: \${studentName}`;
                                 container.appendChild(heading);
-                                
+
                                 // Create the semester dropdown
                                 let semesterLabel = document.createElement('label');
                                 semesterLabel.textContent = "Select Semester: ";
@@ -773,6 +776,8 @@
                                         .then(response => response.json())
                                         .then(data => {
                                             alert('Results submitted successfully');
+                                            location.reload();
+
                                             // Optionally, handle success response (e.g., show a success message or redirect)
                                         })
                                         .catch(error => {
@@ -781,6 +786,110 @@
                                         });
                             }
 
+
+                            function fetchStudentResultByClass(classId, year, className) {
+                                // Fetch results from the JSP page
+                                fetch(`fetchStudentResultByClass.jsp?classId=\${classId}&year=\${year}`)
+                                        .then(response => response.json())
+                                        .then(results => {
+                                            // Call a function to display the results
+                                            displayClassPerformance(results, classId, year, className);
+                                        })
+                                        .catch(error => {
+                                            console.error('Error fetching student results:', error);
+                                        });
+
+                            }
+
+                            function displayClassPerformance(results, classId, year, className) {
+                                // Get the container element
+                                const container = document.getElementById('students-container-for-performance');
+
+                                // Clear existing content
+                                container.innerHTML = '';
+
+                                // Create a header for the class and year
+                                const header = document.createElement('h2');
+                                header.textContent = `Class \${className} - Academic Performance (\${year})`;
+                                header.classList.add('text-2xl', 'font-bold', 'mb-4', 'text-center', 'text-gray-800');
+                                container.appendChild(header);
+
+                                // Group results by semester and subject
+                                const semesterGroups = results.reduce((groups, result) => {
+                                    if (!groups[result.semester]) {
+                                        groups[result.semester] = {};
+                                    }
+                                    if (!groups[result.semester][result.subjectName]) {
+                                        groups[result.semester][result.subjectName] = [];
+                                    }
+                                    groups[result.semester][result.subjectName].push(result.mark);
+                                    return groups;
+                                }, {});
+
+                                // Display results semester by semester
+                                for (const [semester, subjects] of Object.entries(semesterGroups)) {
+                                    // Create a section for the semester
+                                    const semesterSection = document.createElement('div');
+                                    semesterSection.classList.add('semester-section', 'mb-6', 'bg-white', 'shadow', 'rounded', 'p-4');
+
+                                    // Add a title for the semester
+                                    const semesterTitle = document.createElement('h3');
+                                    semesterTitle.textContent = `\${semester}`;
+                                    semesterTitle.classList.add('text-xl', 'font-semibold', 'mb-3', 'text-gray-700');
+                                    semesterSection.appendChild(semesterTitle);
+
+                                    // Create a table to display results
+                                    const table = document.createElement('table');
+                                    table.classList.add('performance-table', 'w-full', 'border-collapse', 'table-auto', 'text-gray-800');
+
+                                    // Add table headers
+                                    const tableHeader = document.createElement('thead');
+                                    tableHeader.innerHTML = `
+            <tr class="bg-gray-100 text-left">
+                <th class="border px-4 py-2">Subject</th>
+                <th class="border px-4 py-2">Average Mark</th>
+            </tr>
+        `;
+                                    table.appendChild(tableHeader);
+
+                                    // Add table body
+                                    const tableBody = document.createElement('tbody');
+                                    for (const [subjectName, marks] of Object.entries(subjects)) {
+                                        const averageMark = (marks.reduce((sum, mark) => sum + parseMark(mark), 0) / marks.length).toFixed(2);
+                                        const row = document.createElement('tr');
+                                        row.innerHTML = `
+                <td class="border px-4 py-2">\${subjectName}</td>
+                <td class="border px-4 py-2">\${averageMark}</td>
+            `;
+                                        tableBody.appendChild(row);
+                                    }
+                                    table.appendChild(tableBody);
+
+                                    // Append the table to the semester section
+                                    semesterSection.appendChild(table);
+
+                                    // Add a description below the table
+                                    const description = document.createElement('p');
+                                    description.textContent = `Note: The average marks are calculated by converting grades into numeric values (A=4, B=3, C=2, D=1, F=0) and averaging them for each subject.`;
+                                    description.classList.add('text-sm', 'text-gray-600', 'mt-2');
+                                    semesterSection.appendChild(description);
+
+                                    // Append the semester section to the container
+                                    container.appendChild(semesterSection);
+                                }
+                            }
+
+// Helper function to parse marks (convert grades to numeric values)
+                            function parseMark(grade) {
+                                const gradeMapping = {
+                                    'A': 4.0,
+                                    'B': 3.0,
+                                    'C': 2.0,
+                                    'D': 1.0,
+                                    'F': 0.0
+                                };
+                                return gradeMapping[grade] || 0.0;
+                            }
 
 
 
@@ -856,12 +965,31 @@
                     </div>
 
                     <div id="subjects" class="dynamic-content" style="display: none;">
-                        <h2 class="text-2xl font-bold text-gray-800">Students</h2>
-                        <p class="mt-4 text-gray-600">subjects</p>
-                    </div>
-                    <div id="classes" class="dynamic-content" style="display: none;">
-                        <h2 class="text-2xl font-bold text-gray-800">Students</h2>
-                        <p class="mt-4 text-gray-600">classes</p>
+                        <h2 class="text-2xl font-bold text-gray-800">Review Student Performance</h2>
+                        <div class="p-8">
+                            <h1 class="text-3xl font-semibold mb-6">Registered Classes</h1>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                                <% for (ClassModel classModel : classes) {%>
+                                <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+                                    <div class="p-6">
+                                        <h2 class="text-xl font-semibold mb-2"><%= classModel.getClassName()%></h2>
+                                        <p class="text-gray-600">Year: <%= classModel.getYear()%></p>
+                                    </div>
+                                    <div class="px-6 py-4 bg-gray-50 text-center">
+                                        <button 
+                                            data-class-id="<%= classModel.getClassId()%>" 
+                                            data-class-year="<%= classModel.getYear()%>"
+                                            class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
+                                            onclick="fetchStudentResultByClass('<%= classModel.getClassId()%>', '<%= classModel.getYear()%>', '<%= classModel.getClassName()%>')">
+                                            View Class Academic Performance 
+                                        </button>
+                                    </div>
+                                </div>
+                                <% }%>
+                            </div>
+                        </div>
+                        <div id="students-container-for-performance"></div>
                     </div>
                 </div>
             </div>
