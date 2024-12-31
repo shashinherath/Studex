@@ -1,7 +1,7 @@
 <%@page import="studex.classes.MyProfile"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ page import="studex.classes.SessionValidator" %>
-<%@ page import="studex.classes.ManageAdminStudent, java.util.List, studex.classes.Student" %>
+<%@ page import="studex.classes.ManageAdminTeacher, java.util.List, studex.classes.Teacher" %>
 <%@ page import="studex.classes.LogoutHandler" %>
 <%
     // Perform session validation
@@ -18,9 +18,9 @@
     MyProfile profile = new MyProfile();
     String user_name = profile.getMyUserName(user_email);
 
-    //add student
+    //add Teacher
     String action = request.getParameter("action");
-    ManageAdminStudent manager = new ManageAdminStudent();
+    ManageAdminTeacher manager = new ManageAdminTeacher();
     String message = "";
 
     if ("add".equals(action)) {
@@ -29,26 +29,26 @@
         String phoneNo = request.getParameter("phone_no");
         String password = request.getParameter("password");
         String clasName = request.getParameter("classname");
-        String userType = "Student";
-        message = manager.addStudent(name, email, phoneNo, password, userType, clasName);
+        String userType = "teacher";
+        message = manager.addTeacher(name, email, phoneNo, password, userType, clasName);
     } else if ("delete".equals(action)) {
         int userId = Integer.parseInt(request.getParameter("user_id"));
-        message = manager.deleteStudent(userId);
-    } else if ("getStudent".equals(action)) {
+        message = manager.deleteTeacher(userId);
+    } else if ("getTeacher".equals(action)) {
         int userId = Integer.parseInt(request.getParameter("user_id"));
-        Student student = manager.getStudent(userId);
-        if (student == null) {
+        Teacher teacher = manager.getTeacher(userId);
+        if (teacher == null) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            response.getWriter().write("{\"error\":\"Student not found\"}");
+            response.getWriter().write("{\"error\":\"Teacher not found\"}");
             return;
         }
         String json = "{";
-        json += "\"userId\":\"" + student.getUserId() + "\",";
-        json += "\"name\":\"" + student.getName() + "\",";
-        json += "\"email\":\"" + student.getEmail() + "\",";
-        json += "\"phoneNo\":\"" + student.getPhoneNo() + "\",";
-        json += "\"className\":\"" + student.getClassName()+ "\",";
-        json += "\"enrollDate\":\"" + student.getEnrollDate() + "\"";
+        json += "\"userId\":\"" + teacher.getUserId() + "\",";
+        json += "\"name\":\"" + teacher.getName() + "\",";
+        json += "\"email\":\"" + teacher.getEmail() + "\",";
+        json += "\"phoneNo\":\"" + teacher.getPhoneNo() + "\",";
+        json += "\"className\":\"" + teacher.getClassName()+ "\",";
+        json += "\"enrollDate\":\"" + teacher.getEnrollDate() + "\"";
         json += "}";
         response.setContentType("application/json");
         response.getWriter().write(json);
@@ -62,11 +62,11 @@
         String className = request.getParameter("classname");
         String password = request.getParameter("password");
 
-        // Update student details
-        message = manager.updateStudent(userId, name, email, phoneNo, enrollDate, className, password);
+        // Update teacher details
+        message = manager.updateTeacher(userId, name, email, phoneNo, enrollDate, className, password);
     }
 
-    List<Student> students = manager.getAllStudents();
+    List<Teacher> teachers = manager.getAllTeachers();
 
     //logout 
     if ("logout".equals(action)) {
@@ -122,7 +122,7 @@
                 <li class="mb-1 group">
                     <a
                         href="/Studex/admin-student.jsp"
-                        class="flex font-semibold items-center py-2 px-4 text-gray-900 hover:bg-gray-950 hover:text-gray-100 rounded-md bg-gray-700 text-white group-[.selected]:bg-gray-950 group-[.selected]:text-gray-100"
+                        class="flex font-semibold items-center py-2 px-4 text-gray-900 hover:bg-gray-950 hover:text-gray-100 rounded-md group-[.active]:bg-gray-800 group-[.active]:text-white group-[.selected]:bg-gray-950 group-[.selected]:text-gray-100"
                         >
                         <i class="ri-user-line mr-3 text-lg"></i>
                         <span class="text-sm">Students</span>
@@ -131,7 +131,7 @@
                 <li class="mb-1 group">
                     <a
                         href="/Studex/admin-teacher.jsp"
-                        class="flex font-semibold items-center py-2 px-4 text-gray-900 hover:bg-gray-950 hover:text-gray-100 rounded-md group-[.active]:bg-gray-800 group-[.active]:text-white group-[.selected]:bg-gray-950 group-[.selected]:text-gray-100"
+                        class="flex font-semibold items-center py-2 px-4 text-gray-900 hover:bg-gray-950 hover:text-gray-100 rounded-md bg-gray-700 text-white group-[.selected]:bg-gray-950 group-[.selected]:text-gray-100"
                         >
                         <i class="ri-user-2-line mr-3 text-lg"></i>
                         <span class="text-sm">Teachers</span>
@@ -247,7 +247,7 @@
 
             <!-- Content -->
             <div>
-                <h1 class="text-4xl font-bold pl-10 pt-10">Students</h1>
+                <h1 class="text-4xl font-bold pl-10 pt-10">Teachers</h1>
             </div>
             <div class="border border-gray-300 rounded-lg shadow-md mx-10 bg-white my-10">
                 <div class="container mx-auto p-10">
@@ -259,7 +259,7 @@
                     <% } %>
 
                     <button onclick="document.getElementById('addModal').classList.remove('hidden')" 
-                            class="bg-blue-500 text-white px-4 py-2 rounded mb-4">Add New Student</button>
+                            class="bg-blue-500 text-white px-4 py-2 rounded mb-4">Add New Teacher</button>
 
                     <table class="table-auto w-full bg-white shadow-md rounded">
                         <thead>
@@ -274,24 +274,24 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <% for (Student student : students) {%>
+                            <% for (Teacher teacher : teachers) {%>
                             <tr>
-                                <td class="border px-4 py-2"><%= student.getName()%></td>
-                                <td class="border px-4 py-2"><%= student.getEmail()%></td>
-                                <td class="border px-4 py-2"><%= student.getPhoneNo()%></td>
-                                <td class="border px-4 py-2"><%= student.getClassName()%></td>
-                                <td class="border px-4 py-2"><%= student.getEnrollDate()%></td>
+                                <td class="border px-4 py-2"><%= teacher.getName()%></td>
+                                <td class="border px-4 py-2"><%= teacher.getEmail()%></td>
+                                <td class="border px-4 py-2"><%= teacher.getPhoneNo()%></td>
+                                <td class="border px-4 py-2"><%= teacher.getClassName()%></td>
+                                <td class="border px-4 py-2"><%= teacher.getEnrollDate()%></td>
                                 <td class="border px-4 py-2">
-                                    <form method="post" style="display:inline;" onsubmit="openUpdateModal(<%= student.getUserId()%>)">
-                                        <input type="hidden" name="action" value="getStudent">
-                                        <input type="hidden" name="user_id" value="<%= student.getUserId()%>">
+                                    <form method="post" style="display:inline;" onsubmit="openUpdateModal(<%= teacher.getUserId()%>)">
+                                        <input type="hidden" name="action" value="getTeacher">
+                                        <input type="hidden" name="user_id" value="<%= teacher.getUserId()%>">
                                         <button type="submit" class="bg-green-500 text-white px-2 py-1 rounded">Update</button>
                                     </form>
                                 </td>                               
                                 <td class="border px-4 py-2">
                                     <form method="post" style="display:inline;">
                                         <input type="hidden" name="action" value="delete">
-                                        <input type="hidden" name="user_id" value="<%= student.getUserId()%>">
+                                        <input type="hidden" name="user_id" value="<%= teacher.getUserId()%>">
                                         <button type="submit" class="bg-red-500 text-white px-2 py-1 rounded">Delete</button>
                                     </form>
                                 </td>
@@ -302,11 +302,11 @@
                 </div>
             </div>
 
-            <!-- Add Student Modal -->
+            <!-- Add Teacher Modal -->
             <div id="addModal" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center hidden">
                 <div class="bg-white p-4 rounded shadow-lg w-96">
-                    <h2 class="text-xl font-bold mb-4">Add New Student</h2>
-                    <form method="post" action="admin-student.jsp">
+                    <h2 class="text-xl font-bold mb-4">Add New Teacher</h2>
+                    <form method="post" action="admin-teacher.jsp">
                         <input type="hidden" name="action" value="add">
                         <div class="mb-4">
                             <label class="block text-gray-700">Name</label>
@@ -334,11 +334,11 @@
                 </div>
             </div>
 
-            <!-- Update Student Model -->
+            <!-- Update Teacher Model -->
             <div id="updateModal" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center hidden">
                 <div class="bg-white p-4 rounded shadow-lg w-96 max-h-[500px] overflow-y-auto">
-                    <h2 class="text-xl font-bold mb-4">Update Student</h2>
-                    <form id="updateForm" method="post" action="admin-student.jsp">
+                    <h2 class="text-xl font-bold mb-4">Update teacher</h2>
+                    <form id="updateForm" method="post" action="admin-teacher.jsp">
                         <input type="hidden" name="action" value="update">
                         <input type="hidden" name="user_id" id="update_user_id">
                         <div class="mb-4">
@@ -588,7 +588,7 @@
 
                             function openUpdateModal(userId) {
                                 event.preventDefault();
-                                fetch('admin-student.jsp?action=getStudent&user_id=' + userId)
+                                fetch('admin-teacher.jsp?action=getTeacher&user_id=' + userId)
                                         .then(response => response.json())
                                         .then(data => {
                                             document.getElementById('update_user_id').value = data.userId;

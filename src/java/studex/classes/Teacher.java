@@ -1,30 +1,21 @@
 package studex.classes;
 
-public class Student {
+public class Teacher {
 
     private int userId;
     private String name;
     private String email;
     private String phoneNo;
     private String enrollmentDate;
-    private String guardianName;
     private String className;
      
-    public Student(int userId, String name, String email, String phoneNo, String enrollmentDate, String className) {
+    public Teacher(int userId, String name, String email, String phoneNo, String enrollmentDate, String className) {
         this.userId = userId;
         this.name = name;
         this.email = email;
         this.phoneNo = phoneNo;
         this.className = className;
         this.enrollmentDate = enrollmentDate;
-    }
-
-    public Student(String name, String email, String phoneNo, String enrollmentDate, String className) {
-        this.name = name;
-        this.email = email;
-        this.phoneNo = phoneNo;
-        this.enrollmentDate = enrollmentDate;
-        this.className = className;
     }
 
     public int getUserId() {
@@ -61,10 +52,6 @@ public class Student {
 
     public String getEnrollDate() {
         return enrollmentDate;
-    }
-
-    public String getGuardianName() {
-        return guardianName;
     }
 
     public void setEnrollDate(String enrollmentDate) {
