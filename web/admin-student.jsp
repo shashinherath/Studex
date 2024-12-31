@@ -336,7 +336,7 @@
 
             <!-- Update Student Model -->
             <div id="updateModal" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center hidden">
-                <div class="bg-white p-4 rounded shadow-lg w-96">
+                <div class="bg-white p-4 rounded shadow-lg w-96 max-h-[500px] overflow-y-auto">
                     <h2 class="text-xl font-bold mb-4">Update Student</h2>
                     <form id="updateForm" method="post" action="admin-student.jsp">
                         <input type="hidden" name="action" value="update">
