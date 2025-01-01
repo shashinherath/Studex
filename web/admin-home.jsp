@@ -1,3 +1,4 @@
+<%@page import="studex.classes.AuthHandler"%>
 <%@page import="studex.classes.MyProfile"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ page import="studex.classes.SessionValidator" %>
@@ -32,7 +33,8 @@
     if ("logout".equals(action)) {
         // Invoke the LogoutHandler to clear session data
         LogoutHandler.logout(session);
-
+        String logoutStatus = AuthHandler.removeTokenFromDatabase(user_email);
+        System.out.println(logoutStatus);
         // Redirect to the login page after logout
         response.sendRedirect("index.jsp");
     }

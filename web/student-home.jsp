@@ -3,6 +3,7 @@
     Created on : Dec 6, 2024, 7:13:28 PM
     Author     : Chamika Niroshan
 --%>
+<%@page import="studex.classes.AuthHandler"%>
 <%@page import="studex.classes.AttendanceHandler"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="studex.classes.SessionValidator" %>
@@ -36,7 +37,8 @@
     if ("logout".equals(action)) {
         // Invoke the LogoutHandler to clear session data
         LogoutHandler.logout(session);
-
+        String logoutStatus = AuthHandler.removeTokenFromDatabase(user_email);
+        System.out.println(logoutStatus);
         // Redirect to the login page after logout
         response.sendRedirect("index.jsp");
     }
