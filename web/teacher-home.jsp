@@ -30,6 +30,7 @@
     String userID = profile.getMyUserId(user_email);
     String teacherID = profile.getTeacherId(userID);
     String classID = profile.getClassId(teacherID);
+    String className = profile.getClassName(teacherID);
 
     AttendanceHandler Attendance = new AttendanceHandler();
     boolean todayAttendance = Attendance.checkAttendanceMarkStatus(classID);
@@ -910,7 +911,7 @@
                             <div class="mt-4">
                                 <p class="text-gray-600"><strong>User Name:</strong> <%= user_name%></p>
                                 <p class="text-gray-600"><strong>Teacher ID:</strong> <%= teacherID%></p>
-                                <p class="text-gray-600"><strong>Assigned Class ID:</strong> <%= classID%></p>
+                                <p class="text-gray-600"><strong>Assigned Class:</strong> <%= className%></p>
                             </div>
                         </div>
                         <!-- Attendance Status Message -->
