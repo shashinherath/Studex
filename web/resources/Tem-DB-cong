@@ -265,7 +265,7 @@ VALUES
 -- Replace '6' with the user_id of the student and '3' with the corresponding class_id.
 
 ALTER TABLE Grades MODIFY COLUMN mark ENUM('A', 'B', 'C', 'D', 'F') NOT NULL;
-
+ 
 -- Insert grades as letter grades.
 INSERT INTO Grades (user_id, subject_id, year, semester, mark)
 VALUES
@@ -329,3 +329,30 @@ WHERE
     AND g.year = 2024
 ORDER BY 
     s.student_id, g.semester, sub.name;
+
+
+
+SELECT 
+    User.user_id,
+    User.email,
+    User.name,
+    User.enrollment_date,
+    User.phone_no,
+    User.user_type,
+    Student.guardian_name
+FROM 
+    User
+JOIN 
+    Student
+ON 
+    User.user_id = Student.user_id
+WHERE 
+    User.user_id = 6;
+
+
+
+
+
+UPDATE User
+SET password = 'newpassword123'
+WHERE user_id = 6;
