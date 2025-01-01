@@ -2,7 +2,8 @@
     Document   : teacher-home
     Created on : Dec 6, 2024, 7:12:45 PM
     Author     : Chamika Niroshan
---%><%@page import="studex.classes.AttendanceHandler"%>
+--%><%@page import="studex.classes.AuthHandler"%>
+<%@page import="studex.classes.AttendanceHandler"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="studex.classes.SessionValidator" %>
 <%@page import="studex.classes.MyProfile"%>
@@ -30,6 +31,7 @@
     String userID = profile.getMyUserId(user_email);
     String teacherID = profile.getTeacherId(userID);
     String classID = profile.getClassId(teacherID);
+    String className = profile.getClassName(teacherID);
 
     AttendanceHandler Attendance = new AttendanceHandler();
     boolean todayAttendance = Attendance.checkAttendanceMarkStatus(classID);
@@ -40,7 +42,8 @@
     if ("logout".equals(action)) {
         // Invoke the LogoutHandler to clear session data
         LogoutHandler.logout(session);
-
+        String logoutStatus = AuthHandler.removeTokenFromDatabase(user_email);
+        System.out.println(logoutStatus);
         // Redirect to the login page after logout
         response.sendRedirect("index.jsp");
     }
@@ -910,7 +913,7 @@
                             <div class="mt-4">
                                 <p class="text-gray-600"><strong>User Name:</strong> <%= user_name%></p>
                                 <p class="text-gray-600"><strong>Teacher ID:</strong> <%= teacherID%></p>
-                                <p class="text-gray-600"><strong>Assigned Class ID:</strong> <%= classID%></p>
+                                <p class="text-gray-600"><strong>Assigned Class:</strong> <%= className%></p>
                             </div>
                         </div>
                         <!-- Attendance Status Message -->

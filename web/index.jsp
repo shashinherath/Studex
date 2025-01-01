@@ -11,8 +11,22 @@
     boolean isValidSession = SessionValidator.isSessionValid(request);
 
     if (isValidSession) {
-        // If session is valid, redirect to the Dashboard
-        response.sendRedirect("admin-home.jsp");
+        // Get the user type from the session
+        String userType = SessionValidator.getUserType(request);
+        // Redirect based on user type
+        if ("Admin".equals(userType)) {
+            // Admin user, redirect to admin home page
+            response.sendRedirect("admin-home.jsp");
+            
+        } else if ("Teacher".equals(userType)) {
+            // Teacher user, redirect to teacher home page
+            response.sendRedirect("teacher-home.jsp");
+            
+        } else if ("Student".equals(userType)) {
+            // Student user, redirect to student home page
+            response.sendRedirect("student-home.jsp");
+            
+        }
         return; // Stop further processing of the page
     }
 %>
@@ -86,7 +100,7 @@
                             }
                         } else {
                             // Display error message
-                %>
+%>
                 <p class="text-red-600 mt-4"><%= errorMessage%></p>
                 <%
                         }

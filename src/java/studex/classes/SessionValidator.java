@@ -10,7 +10,7 @@ public class SessionValidator {
     public static boolean isSessionValid(HttpServletRequest request) {
         // Get the session object
         HttpSession session = request.getSession(false); // false means don't create a new session if it doesn't exist
-        
+
         System.out.println("SessionValidator: Checking session validity...");
 
         if (session != null) {
@@ -41,7 +41,7 @@ public class SessionValidator {
         } else {
             System.out.println("SessionValidator: No session found.");
         }
-        
+
         return false; // Invalid session
     }
 
@@ -69,5 +69,45 @@ public class SessionValidator {
         }
 
         return sessionToken;
+    }
+    // Method to retrieve the user type from the session
+
+    public static String getUserType(HttpServletRequest request) {
+        HttpSession session = request.getSession(false); // false means don't create a new session if it doesn't exist
+        if (session != null) {
+            String email = (String) session.getAttribute("email"); // Get email from session
+            if (email != null) {
+                // Run SQL query to get user type based on email
+                String userType = getUserTypeFromDatabase(email);
+                return userType;
+            }
+        }
+        return null; // Return null if no session or email exists
+    }
+
+    // Method to retrieve the user type from the database
+    private static String getUserTypeFromDatabase(String email) {
+        String userType = null;
+        String query = "SELECT user_type FROM User WHERE email = ?";
+
+        System.out.println("SessionValidator: Retrieving user type from database for email: " + email);
+
+        try (Connection conn = DBHelper.getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, email);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    userType = rs.getString("user_type");
+                    System.out.println("SessionValidator: Found user type in database: " + userType);
+                } else {
+                    System.out.println("SessionValidator: No user found with email: " + email);
+                }
+            }
+
+        } catch (SQLException e) {
+            System.out.println("SessionValidator: Error while retrieving user type from database.");
+            e.printStackTrace();
+        }
+
+        return userType;
     }
 }
