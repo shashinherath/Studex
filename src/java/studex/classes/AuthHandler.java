@@ -1,22 +1,38 @@
 package studex.classes;
 
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.*;
 import javax.servlet.http.HttpSession;  // Add this import for HttpSession
 
 public class AuthHandler {
 
     // Method to authenticate user with username and password
-    public static String authenticateUser(String email, String password, HttpSession session) {
-        String errorMessage = null;
-        String query = "SELECT * FROM user WHERE email = ? AND password = ?";
+    public static String authenticateUser(String email, String password, HttpSession session) throws NoSuchAlgorithmException {
+    String errorMessage = null;
+    String query = "SELECT * FROM user WHERE email = ?";
 
-        try (Connection conn = DBHelper.getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
-            // Set parameters for the query
-            stmt.setString(1, email);
-            stmt.setString(2, password);
+    try (Connection conn = DBHelper.getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
+        // Set parameters for the query
+        stmt.setString(1, email);
 
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
+        try (ResultSet rs = stmt.executeQuery()) {
+            if (rs.next()) {
+                // Retrieve the stored hashed password from the database
+                String storedHashedPassword = rs.getString("password");
+
+                // Hash the provided password
+                MessageDigest md = MessageDigest.getInstance("SHA-256");
+                byte[] hashedBytes = md.digest(password.getBytes("UTF-8"));
+                StringBuilder hexString = new StringBuilder();
+                for (byte b : hashedBytes) {
+                    hexString.append(Integer.toHexString(0xFF & b));
+                }
+                String hashedPassword = hexString.toString();
+
+                // Compare the hashed passwords
+                if (storedHashedPassword.equals(hashedPassword)) {
                     // Valid user, generate token and save to session
                     String sessionToken = TokenUtils.generateToken(email);
 
@@ -26,19 +42,25 @@ public class AuthHandler {
                     session.setAttribute("userType", userType);
                     session.setAttribute("sessionToken", sessionToken);
 
-                    saveTokenToDatabase(email, sessionToken);  // Save the token in the database
+                    saveTokenToDatabase(email, sessionToken); // Save the token in the database
                     return null; // No error, credentials are valid
                 } else {
                     errorMessage = "Invalid email address or password!";
                 }
+            } else {
+                errorMessage = "Invalid email address or password!";
             }
-        } catch (SQLException e) {
-            // Log the error message and stack trace if user validation fails
-            errorMessage = "Error: Unable to validate user credentials! Please check your database.";
         }
-
-        return errorMessage;
+    } catch (SQLException e) {
+        // Log the error message and stack trace if user validation fails
+        errorMessage = "Error: Unable to validate user credentials! Please check your database.";
+    } catch (UnsupportedEncodingException e) {
+        errorMessage = "Error: Unable to process password!";
     }
+
+    return errorMessage;
+}
+
 
     // Method to save the generated token to the database
     private static void saveTokenToDatabase(String email, String sessionToken) {
