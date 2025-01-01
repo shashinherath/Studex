@@ -19,13 +19,13 @@ public class AuthHandler {
                 if (rs.next()) {
                     // Valid user, generate token and save to session
                     String sessionToken = TokenUtils.generateToken(email);
-                    
+
                     String userType = rs.getString("user_type");
 
                     session.setAttribute("email", email);
                     session.setAttribute("userType", userType);
                     session.setAttribute("sessionToken", sessionToken);
-                    
+
                     saveTokenToDatabase(email, sessionToken);  // Save the token in the database
                     return null; // No error, credentials are valid
                 } else {
@@ -66,4 +66,36 @@ public class AuthHandler {
             e.printStackTrace();
         }
     }
+
+    public static String removeTokenFromDatabase(String email) {
+        String updateQuery = "UPDATE user SET token = NULL WHERE email = ?";
+        String resultMessage = "Logout failed"; // Default message in case of failure
+
+        try (Connection conn = DBHelper.getConnection(); PreparedStatement stmt = conn.prepareStatement(updateQuery)) {
+
+            // Set the email in the query parameter
+            stmt.setString(1, email);
+
+            // Execute the update query
+            int rowsUpdated = stmt.executeUpdate();
+
+            // Check if any rows were affected (i.e., the token was removed)
+            if (rowsUpdated > 0) {
+                resultMessage = "Logout successful"; // Token removed successfully
+                System.out.println(resultMessage);
+            } else {
+                resultMessage = "No token found to remove for user: " + email;
+                System.out.println(resultMessage);
+            }
+
+        } catch (SQLException e) {
+            // Log the exception with the full stack trace for debugging
+            resultMessage = "Error removing token for user: " + email;
+            System.err.println(resultMessage);
+            e.printStackTrace();
+        }
+
+        return resultMessage; // Return the result message
+    }
+
 }

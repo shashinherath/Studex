@@ -171,4 +171,45 @@ public class MyProfile {
         }
         return TeacherId;
     }
+    public String getClassName(String teacher_id) {
+        String className = "";
+        
+        if (teacher_id != null) {
+            Connection conn = null;
+            PreparedStatement stmt = null;
+            ResultSet rs = null;
+
+            try {
+                conn = DBHelper.getConnection();
+                String sql = "SELECT Class.name AS class_name FROM Class JOIN Own ON Class.class_id = Own.class_id WHERE Own.teacher_id = ?";
+                stmt = conn.prepareStatement(sql);
+                stmt.setString(1, teacher_id);
+                rs = stmt.executeQuery();
+
+                if (rs.next()) {
+                    className = rs.getString("class_name");
+                }
+            } catch (SQLException e) {
+                // Handle error (e.g., log it)
+                className = "Error fetching userId";
+            } finally {
+                // Close resources manually
+                try {
+                    if (rs != null) {
+                        rs.close();
+                    }
+                    if (stmt != null) {
+                        stmt.close();
+                    }
+                    if (conn != null) {
+                        conn.close();
+                    }
+                } catch (SQLException e) {
+                    // Handle error while closing
+                    e.printStackTrace();
+                }
+            }
+        }
+        return className;
+    }
 }
