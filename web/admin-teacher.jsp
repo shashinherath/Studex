@@ -3,6 +3,8 @@
 <%@ page import="studex.classes.SessionValidator" %>
 <%@ page import="studex.classes.ManageAdminTeacher, java.util.List, studex.classes.Teacher" %>
 <%@ page import="studex.classes.LogoutHandler" %>
+<%@ page import="studex.classes.ClassModel" %>
+<%@ page import="studex.classes.ClassDAO" %>
 <%
     // Perform session validation
     boolean isValidSession = SessionValidator.isSessionValid(request);
@@ -17,6 +19,12 @@
     String user_email = (String) session.getAttribute("email");
     MyProfile profile = new MyProfile();
     String user_name = profile.getMyUserName(user_email);
+
+    //ClassDOA object
+    ClassDAO classData = new ClassDAO();
+
+    //get all classes
+    List<ClassModel> classes = classData.getAvailableClasses();
 
     //add Teacher
     String action = request.getParameter("action");
@@ -47,7 +55,7 @@
         json += "\"name\":\"" + teacher.getName() + "\",";
         json += "\"email\":\"" + teacher.getEmail() + "\",";
         json += "\"phoneNo\":\"" + teacher.getPhoneNo() + "\",";
-        json += "\"className\":\"" + teacher.getClassName()+ "\",";
+        json += "\"className\":\"" + teacher.getClassName() + "\",";
         json += "\"enrollDate\":\"" + teacher.getEnrollDate() + "\"";
         json += "}";
         response.setContentType("application/json");
@@ -276,10 +284,11 @@
                         <tbody>
                             <% for (Teacher teacher : teachers) {%>
                             <tr>
+                                <% ClassModel classmodel = classData.getClassModel(Integer.parseInt(teacher.getClassName()));%>
                                 <td class="border px-4 py-2"><%= teacher.getName()%></td>
                                 <td class="border px-4 py-2"><%= teacher.getEmail()%></td>
                                 <td class="border px-4 py-2"><%= teacher.getPhoneNo()%></td>
-                                <td class="border px-4 py-2"><%= teacher.getClassName()%></td>
+                                <td class="border px-4 py-2"><%= classmodel.getClassName() + " (" + classmodel.getYear() + ")"%></td>
                                 <td class="border px-4 py-2"><%= teacher.getEnrollDate()%></td>
                                 <td class="border px-4 py-2">
                                     <form method="post" style="display:inline;" onsubmit="openUpdateModal(<%= teacher.getUserId()%>)">
@@ -322,7 +331,12 @@
                         </div>
                         <div class="mb-4">
                             <label class="block text-gray-700">Class</label>
-                            <input type="text" name="classname" class="border rounded w-full px-3 py-2">
+                            <select name="classname" class="border rounded w-full px-3 py-2" required>
+                                <option value="" disabled selected>Select a class</option>
+                                <% for (ClassModel classmodel : classes) {%>
+                                <option value="<%= classmodel.getClassId()%>"><%= classmodel.getClassName() + " (" + classmodel.getYear() + ")"%></option>
+                                <% }%>
+                            </select>
                         </div>
                         <div class="mb-4">
                             <label class="block text-gray-700">Password</label>
@@ -355,7 +369,13 @@
                         </div>
                         <div class="mb-4">
                             <label class="block text-gray-700">Class</label>
-                            <input type="text" name="classname" id="update_classname" class="border rounded w-full px-3 py-2">
+                            <select id="update_classname" name="classname" class="border rounded w-full px-3 py-2">
+                                <% for (ClassModel classmodel : classes) {%>
+                                <option value="<%= classmodel.getClassId()%>">
+                                    <%= classmodel.getClassName() + " (" + classmodel.getYear() + ")"%>
+                                </option>
+                                <% }%>
+                            </select>
                         </div>
                         <div class="mb-4">
                             <label class="block text-gray-700">Enroll Date</label>
@@ -595,11 +615,22 @@
                                             document.getElementById('update_name').value = data.name;
                                             document.getElementById('update_email').value = data.email;
                                             document.getElementById('update_phone_no').value = data.phoneNo;
-                                            document.getElementById('update_classname').value = data.className;
+
+                                            // Correctly select the dropdown value
+
+                                            const classDropdown = document.getElementById('update_classname');
+                                            Array.from(classDropdown.options).forEach(option => {
+                                                // Ensure both values are strings for comparison
+                                                if (option.value === String(data.className)) {
+                                                    option.selected = true;
+                                                }
+                                            });
+
                                             document.getElementById('update_enrollDate').value = data.enrollDate;
                                             document.getElementById('updateModal').classList.remove('hidden');
                                         });
                             }
+
     </script>
 </body>
 </html>
