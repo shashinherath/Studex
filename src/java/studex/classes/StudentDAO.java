@@ -26,9 +26,10 @@ public class StudentDAO {
                         String email = rs.getString("email");
                         String phoneNo = rs.getString("phone_no");
                         String enrollmentDate = rs.getString("enrollment_date");
+                        String classIdString = Integer.toString(userId);
                         String guardianName = rs.getString("guardian_name");
                         System.out.println("STUDENT DAO: " + name);
-                        Student student = new Student(userId, name, email, phoneNo, enrollmentDate, guardianName);
+                        Student student = new Student(userId, name, email, phoneNo, enrollmentDate, classIdString, guardianName);
                         students.add(student);
                     }
                 }

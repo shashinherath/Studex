@@ -3,6 +3,8 @@
 <%@ page import="studex.classes.SessionValidator" %>
 <%@ page import="studex.classes.ManageAdminStudent, java.util.List, studex.classes.Student" %>
 <%@ page import="studex.classes.LogoutHandler" %>
+<%@ page import="studex.classes.ClassModel" %>
+<%@ page import="studex.classes.ClassDAO" %>
 <%
     // Perform session validation
     boolean isValidSession = SessionValidator.isSessionValid(request);
@@ -17,6 +19,12 @@
     String user_email = (String) session.getAttribute("email");
     MyProfile profile = new MyProfile();
     String user_name = profile.getMyUserName(user_email);
+    
+    //ClassDOA object
+    ClassDAO classData = new ClassDAO();
+
+    //get all classes
+    List<ClassModel> classes = classData.getAvailableClasses();
 
     //add student
     String action = request.getParameter("action");
@@ -29,8 +37,9 @@
         String phoneNo = request.getParameter("phone_no");
         String password = request.getParameter("password");
         String clasName = request.getParameter("classname");
+        String guardianName = request.getParameter("guardian_name");
         String userType = "Student";
-        message = manager.addStudent(name, email, phoneNo, password, userType, clasName);
+        message = manager.addStudent(name, email, phoneNo, password, userType, clasName, guardianName);
     } else if ("delete".equals(action)) {
         int userId = Integer.parseInt(request.getParameter("user_id"));
         message = manager.deleteStudent(userId);
@@ -48,6 +57,7 @@
         json += "\"email\":\"" + student.getEmail() + "\",";
         json += "\"phoneNo\":\"" + student.getPhoneNo() + "\",";
         json += "\"className\":\"" + student.getClassName()+ "\",";
+        json += "\"guardianName\":\"" + student.getGuardianName()+ "\",";
         json += "\"enrollDate\":\"" + student.getEnrollDate() + "\"";
         json += "}";
         response.setContentType("application/json");
@@ -60,10 +70,11 @@
         String phoneNo = request.getParameter("phone_no");
         String enrollDate = request.getParameter("enrollDate");
         String className = request.getParameter("classname");
+        String guardianName = request.getParameter("guardian_name");
         String password = request.getParameter("password");
 
         // Update student details
-        message = manager.updateStudent(userId, name, email, phoneNo, enrollDate, className, password);
+        message = manager.updateStudent(userId, name, email, phoneNo, enrollDate, className, guardianName, password);
     }
 
     List<Student> students = manager.getAllStudents();
@@ -268,6 +279,7 @@
                                 <th class="px-4 py-2">Email</th>
                                 <th class="px-4 py-2">Phone</th>
                                 <th class="px-4 py-2">Class</th>
+                                <th class="px-4 py-2">Guardian Name</th>
                                 <th class="px-4 py-2">Enrollment Date</th>
                                 <th class="px-4 py-2"></th>
                                 <th class="px-4 py-2"></th>
@@ -276,10 +288,12 @@
                         <tbody>
                             <% for (Student student : students) {%>
                             <tr>
+                                <% ClassModel classmodel = classData.getClassModel(Integer.parseInt(student.getClassName()));%>
                                 <td class="border px-4 py-2"><%= student.getName()%></td>
                                 <td class="border px-4 py-2"><%= student.getEmail()%></td>
                                 <td class="border px-4 py-2"><%= student.getPhoneNo()%></td>
-                                <td class="border px-4 py-2"><%= student.getClassName()%></td>
+                                <td class="border px-4 py-2"><%= classmodel.getClassName() + " (" + classmodel.getYear() + ")"%></td>
+                                <td class="border px-4 py-2"><%= student.getGuardianName()%></td>
                                 <td class="border px-4 py-2"><%= student.getEnrollDate()%></td>
                                 <td class="border px-4 py-2">
                                     <form method="post" style="display:inline;" onsubmit="openUpdateModal(<%= student.getUserId()%>)">
@@ -304,7 +318,7 @@
 
             <!-- Add Student Modal -->
             <div id="addModal" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center hidden">
-                <div class="bg-white p-4 rounded shadow-lg w-96">
+                <div class="bg-white p-4 rounded shadow-lg w-96 max-h-[500px] overflow-y-auto">
                     <h2 class="text-xl font-bold mb-4">Add New Student</h2>
                     <form method="post" action="admin-student.jsp">
                         <input type="hidden" name="action" value="add">
@@ -322,7 +336,16 @@
                         </div>
                         <div class="mb-4">
                             <label class="block text-gray-700">Class</label>
-                            <input type="text" name="classname" class="border rounded w-full px-3 py-2">
+                            <select name="classname" class="border rounded w-full px-3 py-2" required>
+                                <option value="" disabled selected>Select a class</option>
+                                <% for (ClassModel classmodel : classes) {%>
+                                <option value="<%= classmodel.getClassId()%>"><%= classmodel.getClassName() + " (" + classmodel.getYear() + ")"%></option>
+                                <% }%>
+                            </select>
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-gray-700">Guardian Name</label>
+                            <input type="text" name="guardian_name" class="border rounded w-full px-3 py-2">
                         </div>
                         <div class="mb-4">
                             <label class="block text-gray-700">Password</label>
@@ -355,7 +378,17 @@
                         </div>
                         <div class="mb-4">
                             <label class="block text-gray-700">Class</label>
-                            <input type="text" name="classname" id="update_classname" class="border rounded w-full px-3 py-2">
+                            <select id="update_classname" name="classname" class="border rounded w-full px-3 py-2">
+                                <% for (ClassModel classmodel : classes) {%>
+                                <option value="<%= classmodel.getClassId()%>">
+                                    <%= classmodel.getClassName() + " (" + classmodel.getYear() + ")"%>
+                                </option>
+                                <% }%>
+                            </select>
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-gray-700">Guardian Name</label>
+                            <input type="text" name="guardian_name" id="update_guardian_name" class="border rounded w-full px-3 py-2">
                         </div>
                         <div class="mb-4">
                             <label class="block text-gray-700">Enroll Date</label>
@@ -595,7 +628,15 @@
                                             document.getElementById('update_name').value = data.name;
                                             document.getElementById('update_email').value = data.email;
                                             document.getElementById('update_phone_no').value = data.phoneNo;
-                                            document.getElementById('update_classname').value = data.className;
+                                            
+                                            const classDropdown = document.getElementById('update_classname');
+                                            Array.from(classDropdown.options).forEach(option => {
+                                                // Ensure both values are strings for comparison
+                                                if (option.value === String(data.className)) {
+                                                    option.selected = true;
+                                                }
+                                            });
+                                            document.getElementById('update_guardian_name').value = data.guardianName;
                                             document.getElementById('update_enrollDate').value = data.enrollDate;
                                             document.getElementById('updateModal').classList.remove('hidden');
                                         });
