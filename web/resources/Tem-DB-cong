@@ -356,3 +356,17 @@ WHERE
 UPDATE User
 SET password = 'newpassword123'
 WHERE user_id = 6;
+
+
+
+
+
+
+
+
+
+------------------------------------------------------------------------
+
+
+Backup Database: mysqldump -u root -p studex_db > "C:\Users\Chamika Niroshan\Desktop\studex_db_backup_2025-01-02.sql"
+
