@@ -10,21 +10,14 @@ public class Student {
     private String guardianName;
     private String className;
      
-    public Student(int userId, String name, String email, String phoneNo, String enrollmentDate, String className) {
+    public Student(int userId, String name, String email, String phoneNo, String enrollmentDate, String className, String guardianName) {
         this.userId = userId;
         this.name = name;
         this.email = email;
         this.phoneNo = phoneNo;
-        this.className = className;
-        this.enrollmentDate = enrollmentDate;
-    }
-
-    public Student(String name, String email, String phoneNo, String enrollmentDate, String className) {
-        this.name = name;
-        this.email = email;
-        this.phoneNo = phoneNo;
         this.enrollmentDate = enrollmentDate;
         this.className = className;
+        this.guardianName = guardianName;
     }
 
     public int getUserId() {
@@ -78,5 +71,4 @@ public class Student {
     public void setClassName(String className) {
         this.className = className;
     }
-
 }
