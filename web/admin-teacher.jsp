@@ -616,8 +616,6 @@
                                             document.getElementById('update_email').value = data.email;
                                             document.getElementById('update_phone_no').value = data.phoneNo;
 
-                                            // Correctly select the dropdown value
-
                                             const classDropdown = document.getElementById('update_classname');
                                             Array.from(classDropdown.options).forEach(option => {
                                                 // Ensure both values are strings for comparison
