@@ -5,6 +5,7 @@
 <%@ page import="studex.classes.LogoutHandler" %>
 <%@ page import="studex.classes.ClassModel" %>
 <%@ page import="studex.classes.ClassDAO" %>
+<%@ page import="studex.classes.PasswordEncryptor" %>
 <%
     // Perform session validation
     boolean isValidSession = SessionValidator.isSessionValid(request);
@@ -35,7 +36,7 @@
         String name = request.getParameter("name");
         String email = request.getParameter("email");
         String phoneNo = request.getParameter("phone_no");
-        String password = request.getParameter("password");
+        String password = PasswordEncryptor.hashPassword(request.getParameter("password"));
         String clasName = request.getParameter("classname");
         String guardianName = request.getParameter("guardian_name");
         String userType = "Student";
@@ -71,7 +72,7 @@
         String enrollDate = request.getParameter("enrollDate");
         String className = request.getParameter("classname");
         String guardianName = request.getParameter("guardian_name");
-        String password = request.getParameter("password");
+        String password = PasswordEncryptor.hashPassword(request.getParameter("password"));
 
         // Update student details
         message = manager.updateStudent(userId, name, email, phoneNo, enrollDate, className, guardianName, password);

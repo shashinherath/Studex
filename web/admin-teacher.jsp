@@ -5,6 +5,7 @@
 <%@ page import="studex.classes.LogoutHandler" %>
 <%@ page import="studex.classes.ClassModel" %>
 <%@ page import="studex.classes.ClassDAO" %>
+<%@ page import="studex.classes.PasswordEncryptor" %>
 <%
     // Perform session validation
     boolean isValidSession = SessionValidator.isSessionValid(request);
@@ -35,7 +36,7 @@
         String name = request.getParameter("name");
         String email = request.getParameter("email");
         String phoneNo = request.getParameter("phone_no");
-        String password = request.getParameter("password");
+        String password = PasswordEncryptor.hashPassword(request.getParameter("password"));
         String clasName = request.getParameter("classname");
         String userType = "teacher";
         message = manager.addTeacher(name, email, phoneNo, password, userType, clasName);
@@ -68,7 +69,7 @@
         String phoneNo = request.getParameter("phone_no");
         String enrollDate = request.getParameter("enrollDate");
         String className = request.getParameter("classname");
-        String password = request.getParameter("password");
+        String password = PasswordEncryptor.hashPassword(request.getParameter("password"));
 
         // Update teacher details
         message = manager.updateTeacher(userId, name, email, phoneNo, enrollDate, className, password);
@@ -615,8 +616,6 @@
                                             document.getElementById('update_name').value = data.name;
                                             document.getElementById('update_email').value = data.email;
                                             document.getElementById('update_phone_no').value = data.phoneNo;
-
-                                            // Correctly select the dropdown value
 
                                             const classDropdown = document.getElementById('update_classname');
                                             Array.from(classDropdown.options).forEach(option => {
