@@ -37,11 +37,23 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Login - Studex</title>
         <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+        <style>
+            body {
+                background-image: url('./resources/images/wallpapers/back.jpg'); 
+                background-size: cover;
+                background-position: center;
+                background-repeat: no-repeat;
+                background-attachment: fixed;
+            }
+         </style>
     </head>
-    <body class="bg-gray-100">
+    <body>
         <div class="flex justify-center items-center h-screen">
-            <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 w-full max-w-md">
-                <h2 class="text-2xl font-bold mb-6 text-center">Studex Login</h2>
+
+<div style="background-color: rgba(255, 255, 255, 0.8); border-radius: 30px;" class="shadow-md rounded px-8 pt-6 pb-8 mb-4 w-full max-w-md">
+
+               <h2 class="text-4xl font-bold mb-6 text-center" style="color: #a651d3;">STUDEX LOGING</h2>
+
                 <form method="POST" action="index.jsp">
                     <div class="mb-4">
                         <label class="block text-gray-700 text-sm font-bold mb-2" for="email">
@@ -67,9 +79,9 @@
                             placeholder="Enter your password" 
                             required>
                     </div>
-                    <div class="flex items-center justify-between">
+                    <div class="flex items-center justify-center">
                         <button 
-                            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" 
+                            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline " 
                             type="submit">
                             Sign In
                         </button>
@@ -100,7 +112,7 @@
                             }
                         } else {
                             // Display error message
-%>
+                %>
                 <p class="text-red-600 mt-4"><%= errorMessage%></p>
                 <%
                         }
