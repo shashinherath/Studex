@@ -18,15 +18,15 @@
         if ("Admin".equals(userType)) {
             // Admin user, redirect to admin home page
             response.sendRedirect("admin-home.jsp");
-            
+
         } else if ("Teacher".equals(userType)) {
             // Teacher user, redirect to teacher home page
             response.sendRedirect("teacher-home.jsp");
-            
+
         } else if ("Student".equals(userType)) {
             // Student user, redirect to student home page
             response.sendRedirect("student-home.jsp");
-            
+
         }
         return; // Stop further processing of the page
     }
@@ -40,23 +40,23 @@
         <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
         <style>
             body {
-                background-image: url('./resources/images/wallpapers/back.jpg'); 
+                background-image: url('./resources/images/wallpapers/back.jpg');
                 background-size: cover;
                 background-position: center;
                 background-repeat: no-repeat;
                 background-attachment: fixed;
             }
-         </style>
+        </style>
     </head>
     <body class="bg-gray-100">
     <body>
         <div class="flex justify-center items-center h-screen">
-            
-               
 
-<div style="background-color: rgba(255, 255, 255, 0.8); border-radius: 30px;" class="shadow-md rounded px-8 pt-6 pb-8 mb-4 w-full max-w-md">
 
-               <h2 class="text-4xl font-bold mb-6 text-center" style="color: #a651d3;">STUDEX LOGING</h2>
+
+            <div style="background-color: rgba(255, 255, 255, 0.8); border-radius: 30px;" class="shadow-md rounded px-8 pt-6 pb-8 mb-4 w-full max-w-md">
+
+                <h2 class="text-4xl font-bold mb-6 text-center" style="color: #a651d3;">STUDEX LOGING</h2>
 
                 <form method="POST" action="index.jsp">
                     <div class="mb-4">
@@ -83,11 +83,11 @@
                             placeholder="Enter your password" 
                             required>
                     </div>
-                    
+
                     <div class="flex items-center justify-center">
                         <button 
                             class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline " 
-                            
+
                             type="submit">
                             Sign In
                         </button>
@@ -118,7 +118,7 @@
                             }
                         } else {
                             // Display error message
-%>
+                %>
                 <p class="text-red-600 mt-4"><%= errorMessage%></p>
                 <%
                         }
