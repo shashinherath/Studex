@@ -119,7 +119,6 @@
                         } else {
                             // Display error message
 %>
-                %>
                 <p class="text-red-600 mt-4"><%= errorMessage%></p>
                 <%
                         }
