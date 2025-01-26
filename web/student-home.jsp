@@ -290,7 +290,7 @@
             <!-- Sidebar -->
             <div class="w-64 bg-white shadow-md h-full">
                 <div class="p-6">
-                    <a href="teacher-home.jsp" class="flex items-center pb-4 border-b border-b-gray-800">
+                    <a href="teacher-home.jsp" class="flex items-center pb-2 border-b border-b-gray-800 ">
                         <img src="./resources/images/logo/logoStudex.png" class="h-18 w-auto" />
                     </a>
                     <h2 class="mt-4 text-lg font-bold text-gray-400">Student PANEL</h2>
