@@ -112,53 +112,53 @@
     </head>
     <body class="text-gray-800 font-inter">
         <div
-            class="fixed left-0 top-0 w-64 h-full bg-[#f8f4f3] p-4 z-50 sidebar-menu transition-transform"
+            class="fixed left-0 top-0 w-64 h-full bg-white p-4 z-50 shadow-md shadow-black/5 sidebar-menu transition-transform"
             >
-            <a href="#" class="flex items-center pb-4 border-b border-b-gray-800">
-                <img src="./resources/images/logo/logoStudex.png" class="h-18 w-auto" />
+            <a href="#" class="flex items-center pb-4">
+                <img src="./resources/images/logo/logoStudex.png" class="h-12 w-auto" />
             </a>
             <ul class="mt-4">
                 <span class="text-gray-500 font-bold">ADMIN PANEL</span>
-                <li class="mt-4 mb-1 group">
+                <li class="mt-4 mb-2 group">
                     <a
                         href="/Studex/admin-home.jsp"
-                        class="flex font-semibold items-center py-2 px-4 text-gray-900 hover:bg-gray-950 hover:text-gray-100 rounded-md group-[.active]:bg-gray-800 group-[.active]:text-white group-[.selected]:bg-gray-950 group-[.selected]:text-gray-100"
+                        class="flex font-semibold items-center py-2 px-4 text-gray-900 hover:bg-gray-600 hover:text-gray-100 rounded-md group-[.active]:bg-gray-800 group-[.active]:text-white group-[.selected]:bg-gray-950 group-[.selected]:text-gray-100"
                         >
                         <i class="ri-home-2-line mr-3 text-lg"></i>
                         <span class="text-sm">Dashboard</span>
                     </a>
                 </li>
-                <li class="mb-1 group">
+                <li class="mb-2 group">
                     <a
                         href="/Studex/admin-student.jsp"
-                        class="flex font-semibold items-center py-2 px-4 text-gray-900 hover:bg-gray-950 hover:text-gray-100 rounded-md group-[.active]:bg-gray-800 group-[.active]:text-white group-[.selected]:bg-gray-950 group-[.selected]:text-gray-100"
+                        class="flex font-semibold items-center py-2 px-4 text-gray-900 hover:bg-gray-600 hover:text-gray-100 rounded-md group-[.active]:bg-gray-800 group-[.active]:text-white group-[.selected]:bg-gray-950 group-[.selected]:text-gray-100"
                         >
                         <i class="ri-user-line mr-3 text-lg"></i>
                         <span class="text-sm">Students</span>
                     </a>
                 </li>
-                <li class="mb-1 group">
+                <li class="mb-2 group">
                     <a
                         href="/Studex/admin-teacher.jsp"
-                        class="flex font-semibold items-center py-2 px-4 text-gray-900 hover:bg-gray-950 hover:text-gray-100 rounded-md bg-gray-700 text-white group-[.selected]:bg-gray-950 group-[.selected]:text-gray-100"
+                        class="flex font-semibold items-center py-2 px-4 text-gray-900 hover:bg-gray-600 hover:text-gray-100 rounded-md bg-gray-700 text-white group-[.selected]:bg-gray-950 group-[.selected]:text-gray-100"
                         >
                         <i class="ri-user-2-line mr-3 text-lg"></i>
                         <span class="text-sm">Teachers</span>
                     </a>
                 </li>
-                <li class="mb-1 group">
+                <li class="mb-2 group">
                     <a
                         href="/Studex/admin-subject.jsp"
-                        class="flex font-semibold items-center py-2 px-4 text-gray-900 hover:bg-gray-950 hover:text-gray-100 rounded-md group-[.active]:bg-gray-800 group-[.active]:text-white group-[.selected]:bg-gray-950 group-[.selected]:text-gray-100"
+                        class="flex font-semibold items-center py-2 px-4 text-gray-900 hover:bg-gray-600 hover:text-gray-100 rounded-md group-[.active]:bg-gray-800 group-[.active]:text-white group-[.selected]:bg-gray-950 group-[.selected]:text-gray-100"
                         >
                         <i class="ri-book-line mr-3 text-lg"></i>
                         <span class="text-sm">Subjects</span>
                     </a>
                 </li>
-                <li class="mb-1 group">
+                <li class="mb-2 group">
                     <a
                         href="/Studex/admin-class.jsp"
-                        class="flex font-semibold items-center py-2 px-4 text-gray-900 hover:bg-gray-950 hover:text-gray-100 rounded-md group-[.active]:bg-gray-800 group-[.active]:text-white group-[.selected]:bg-gray-950 group-[.selected]:text-gray-100"
+                        class="flex font-semibold items-center py-2 px-4 text-gray-900 hover:bg-gray-600 hover:text-gray-100 rounded-md group-[.active]:bg-gray-800 group-[.active]:text-white group-[.selected]:bg-gray-950 group-[.selected]:text-gray-100"
                         >
                         <i class="ri-graduation-cap-line mr-3 text-lg"></i>
                         <span class="text-sm">Classes</span>
@@ -174,7 +174,7 @@
             class="w-full md:w-[calc(100%-256px)] md:ml-64 bg-gray-200 min-h-screen transition-all main"
             >
             <div
-                class="py-2 px-6 bg-[#f8f4f3] flex items-center shadow-md shadow-black/5 sticky top-0 left-0 z-30"
+                class="py-2 px-6 bg-transparent flex items-center sticky top-0 left-0 z-30"
                 >
                 <button
                     type="button"
@@ -216,8 +216,8 @@
                     <li class="dropdown ml-3">
                         <button type="button" class="dropdown-toggle flex items-center">
                             <div class="p-2 md:block text-left">
-                                <h2 class="text-sm font-semibold text-gray-800"><%= user_name != null && !user_name.isEmpty() ? user_name : "User"%></h2>
-                                <p class="text-xs text-gray-500">Administrator</p>
+                                <h2 class="text-sm font-semibold text-gray-800 hover:text-[#732A9B]"><%= user_name != null && !user_name.isEmpty() ? user_name : "User"%></h2>
+                                <p class="text-xs text-gray-500 hover:text-[#732A9B]">Administrator</p>
                             </div>
                         </button>
                         <ul

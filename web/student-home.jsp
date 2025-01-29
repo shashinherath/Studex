@@ -49,7 +49,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Teacher Panel - STUDEX</title>
+        <title>Student Panel - STUDEX</title>
         <script src="https://cdn.tailwindcss.com"></script>
         <script>
             function displayContent(contentId, tabId) {
@@ -112,14 +112,14 @@
                 const profileContainer = document.getElementById('students-profile-info');
                 profileContainer.innerHTML = `
             <div class="bg-white p-6 rounded-lg shadow-lg max-w-md mx-auto">
-                <h2 class="text-2xl font-semibold text-gray-800 mb-4">Profile Information</h2>
+                <h2 class="text-2xl text-center font-semibold text-gray-800 mb-4">Profile Information</h2>
                 <div class="space-y-4">
-                    <p class="text-gray-700"><strong class="font-medium">Name:</strong> \${profile.name}</p>
-                    <p class="text-gray-700"><strong class="font-medium">Email:</strong> \${profile.email}</p>
-                    <p class="text-gray-700"><strong class="font-medium">Enrollment Date:</strong> \${profile.enrollment_date}</p>
-                    <p class="text-gray-700"><strong class="font-medium">Phone Number:</strong> \${profile.phone_no}</p>
-                    <p class="text-gray-700"><strong class="font-medium">User Type:</strong> \${profile.user_type}</p>
-                    <p class="text-gray-700"><strong class="font-medium">Guardian Name:</strong> \${profile.guardian_name}</p>
+                    <p class="text-gray-700"><strong class="font-large">Name:</strong> \${profile.name}</p>
+                    <p class="text-gray-700"><strong class="font-large">Email:</strong> \${profile.email}</p>
+                    <p class="text-gray-700"><strong class="font-large">Enrollment Date:</strong> \${profile.enrollment_date}</p>
+                    <p class="text-gray-700"><strong class="font-large">Phone Number:</strong> \${profile.phone_no}</p>
+                    <p class="text-gray-700"><strong class="font-large">User Type:</strong> \${profile.user_type}</p>
+                    <p class="text-gray-700"><strong class="font-large">Guardian Name:</strong> \${profile.guardian_name}</p>
                 </div>
             </div>
         `;
@@ -159,19 +159,19 @@
                 // Construct the HTML structure to display grouped grades
                 let gradesHtml = `
         <div class="bg-white p-6 rounded-lg shadow-lg max-w-4xl mx-auto">
-            <h2 class="text-2xl font-semibold text-gray-800 mb-4">Your Academic Grades</h2>
+            <h2 class="text-2xl font-semibold text-gray-800 text-center mb-4">Your Academic Grades</h2>
     `;
                 // Loop through each year-semester group
                 for (const key in groupedGrades) {
                     const [year, semester] = key.split('-');
                     gradesHtml += `
             <div class="mb-8">
-                <h3 class="text-xl font-semibold text-gray-700 mb-4">\${year} - \${semester}</h3>
+                <h3 class="text-xl font-semibold text-center text-gray-700 mb-4">\${year} - \${semester}</h3>
                 <table class="w-full table-auto border-collapse">
                     <thead>
                         <tr>
-                            <th class="px-6 py-3 text-left border-b font-medium text-gray-600">Subject</th>
-                            <th class="px-6 py-3 text-left border-b font-medium text-gray-600">Mark</th>
+                            <th class="px-6 py-3 text-left border-b font-large text-gray-600">Subject</th>
+                            <th class="px-6 py-3 text-left border-b font-large text-gray-600">Mark</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -219,7 +219,7 @@
                     <input type="password" id="confirmPassword" name="confirmPassword" required class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                 </div>
 
-                <button type="button" id="submitPasswordChange" class="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">Change Password</button>
+                <button type="button" id="submitPasswordChange" class="w-full bg-purple-500 text-white py-2 rounded-md hover:bg-purple-600 focus:outline-none focus:ring-2 focus:ring-blue-500">Change Password</button>
             </form>
 
             <div id="statusMessage" class="mt-4 text-center"></div> <!-- Status message container -->
@@ -288,23 +288,23 @@
         <div class="flex h-screen">
 
             <!-- Sidebar -->
-            <div class="w-64 bg-white shadow-md h-full">
+            <div class="w-64 bg-transparent shadow-lg h-full">
                 <div class="p-6">
-                    <a href="teacher-home.jsp" class="flex items-center pb-2 border-b border-b-gray-800 ">
-                        <img src="./resources/images/logo/logoStudex.png" class="h-18 w-auto" />
+                    <a href="teacher-home.jsp" class="flex items-center pb-2 ">
+                        <img src="./resources/images/logo/logoStudex.png" class="h-12 w-auto" />
                     </a>
                     <h2 class="mt-4 text-lg font-bold text-gray-400">Student PANEL</h2>
                 </div>
                 <nav class="mt-6">
-                    <button id="profile-tab" class="tab-button block w-full text-left px-6 py-3 hover:bg-purple-100 text-gray-800 text-xs" onclick="displayContent('profile', 'profile-tab');
+                    <button id="profile-tab" class="tab-button block w-full text-left px-6 py-4 m-2 rounded-l-xl hover:bg-purple-100 text-gray-800 text-md" onclick="displayContent('profile', 'profile-tab');
                             loadProfileInfo(<%= userID%>);">
-                        <i class="ri-home-2-line mr-3 text-lg"></i>View My Profile Info
+                        <i class="ri-home-2-line mr-3 text-lg"></i>My Profile Info
                     </button>
-                    <button id="password-tab" class="tab-button block w-full text-left px-6 py-3 hover:bg-purple-100 text-gray-800 text-xs" onclick="displayContent('password', 'password-tab');
+                    <button id="password-tab" class="tab-button block w-full text-left px-6 py-4 m-2 rounded-l-xl hover:bg-purple-100 text-gray-800 text-md" onclick="displayContent('password', 'password-tab');
                             changePassword(<%= userID%>);">
                         <i class="ri-user-line mr-3 text-lg"></i>Change Password
                     </button>
-                    <button id="grade-tab" class="tab-button block w-full text-left px-6 py-3 hover:bg-purple-100 text-gray-800 text-xs" onclick="displayContent('grade', 'grade-tab');
+                    <button id="grade-tab" class="tab-button block w-full text-left px-6 py-4 m-2 rounded-l-xl hover:bg-purple-100 text-gray-800 text-md" onclick="displayContent('grade', 'grade-tab');
                             loadGrades(<%= userID%>);">
                         <i class="ri-user-2-line mr-3 text-lg"></i>View Grades
                     </button>
@@ -315,7 +315,7 @@
             <div class="flex-1 flex flex-col">
 
                 <!-- Navbar -->
-                <div class="flex items-center justify-between px-6 py-4">
+                <div class="flex items-center bg-tansparent justify-between px-6 py-4">
                     <div>
                         <h1 class="text-gray-700 font-semibold"><%= user_name != null && !user_name.isEmpty() ? user_name : "User"%></h1>
                         <p class="text-sm text-gray-500">Student</p>
@@ -326,8 +326,8 @@
                             <path d="M5 5h5V3H3v7h2zm5 14H5v-5H3v7h7zm11-5h-2v5h-5v2h7zm-2-4h2V3h-7v2h5z"></path>
                             </svg>
                         </button>
-                        <button class="px-4 py-2 bg-red-100 rounded hover:bg-red-400" onclick="logout()">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" class="hover:bg-red-400 rounded-full" viewBox="0 0 24 24" style="fill: gray">
+                        <button class="px-4 py-2 rounded hover:bg-purple-100" onclick="logout()">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" class="hover:bg-purple-100 rounded-full" viewBox="0 0 24 24" style="fill: gray">
                             <path d="M14 7l-1.41 1.41L16.17 12H8v2h8.17l-3.59 3.59L14 17l5-5-5-5zM19 3h-8c-1.1 0-2 .9-2 2v3h2V5h8v14h-8v-3h-2v3c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"></path>
                             </svg>
                         </button>
@@ -335,10 +335,10 @@
                 </div>
 
                 <!-- Dynamic Content -->
-                <div class="flex-1 overflow-y-auto p-6 bg-gray-200">
+                <div class="flex-1 overflow-y-auto p-6 bg-[url('./resources/images/wallpapers/bg.jpg')] bg-cover bg-center">
                     <!-- Dashboard Content -->
                     <div id="profile" class="dynamic-content">
-                        <h2 class="text-2xl font-bold text-gray-800">View My Profile Info</h2>
+                        <h2 class="text-2xl font-bold text-gray-800">My Profile Info</h2>
                         <div class="p-8">
                             <div id="students-profile-info"></div>
                         </div>

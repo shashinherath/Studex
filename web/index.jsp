@@ -54,9 +54,9 @@
 
 
 
-            <div style="background-color: rgba(255, 255, 255, 0.8); border-radius: 30px;" class="shadow-md rounded px-8 pt-6 pb-8 mb-4 w-full max-w-md">
+            <div style="background-color: rgba(255, 255, 255, 0.8);" class="shadow-md rounded-2xl px-8 pt-6 pb-8 mb-4 w-full max-w-md">
 
-                <h2 class="text-4xl font-bold mb-6 text-center" style="color: #a651d3;">STUDEX LOGING</h2>
+                <h2 class="text-3xl font-bold mb-6 text-center" style="color: #a651d3;">STUDEX LOGIN</h2>
 
                 <form method="POST" action="index.jsp">
                     <div class="mb-4">
@@ -64,7 +64,7 @@
                             Email Address
                         </label>
                         <input 
-                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
+                            class="shadow appearance-none border rounded-lg w-full py-2.5 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
                             id="email" 
                             name="email" 
                             type="text" 
@@ -76,7 +76,7 @@
                             Password
                         </label>
                         <input 
-                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
+                            class="shadow appearance-none border rounded-lg w-full py-2.5 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
                             id="password" 
                             name="password" 
                             type="password" 
@@ -86,7 +86,7 @@
 
                     <div class="flex items-center justify-center">
                         <button 
-                            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline " 
+                            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg focus:outline-none focus:shadow-outline " 
 
                             type="submit">
                             Sign In

@@ -141,8 +141,8 @@
             <!-- Sidebar -->
             <div class="w-64 bg-white shadow-md h-full">
                 <div class="p-6">
-                    <a href="teacher-home.jsp" class="flex items-center pb-4 border-b border-b-gray-800">
-                        <img src="./resources/images/logo/logoStudex.png" class="h-18 w-auto" />
+                    <a href="teacher-home.jsp" class="flex items-center pb-4">
+                        <img src="./resources/images/logo/logoStudex.png" class="h-12 w-auto" />
                     </a>
                     <h2 class="mt-4 text-lg font-bold text-gray-400">Teacher PANEL</h2>
                 </div>
@@ -177,8 +177,8 @@
                             <path d="M5 5h5V3H3v7h2zm5 14H5v-5H3v7h7zm11-5h-2v5h-5v2h7zm-2-4h2V3h-7v2h5z"></path>
                             </svg>
                         </button>
-                        <button class="px-4 py-2 bg-red-100 rounded hover:bg-red-400" onclick="logout()">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" class="hover:bg-red-400 rounded-full" viewBox="0 0 24 24" style="fill: gray">
+                        <button class="px-4 py-2 bg-purple-100 rounded hover:bg-purple-200" onclick="logout()">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" class="hover:bg-purple-200 rounded-full" viewBox="0 0 24 24" style="fill: gray">
                             <path d="M14 7l-1.41 1.41L16.17 12H8v2h8.17l-3.59 3.59L14 17l5-5-5-5zM19 3h-8c-1.1 0-2 .9-2 2v3h2V5h8v14h-8v-3h-2v3c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"></path>
                             </svg>
                         </button>
