@@ -141,22 +141,22 @@
             <!-- Sidebar -->
             <div class="w-64 bg-white shadow-md h-full">
                 <div class="p-6">
-                    <a href="teacher-home.jsp" class="flex items-center pb-4 border-b border-b-gray-800">
-                        <img src="./resources/images/logo/logoStudex.png" class="h-18 w-auto" />
+                    <a href="teacher-home.jsp" class="flex items-center pb-2">
+                        <img src="./resources/images/logo/logoStudex.png" class="h-12 w-auto" />
                     </a>
-                    <h2 class="mt-4 text-lg font-bold text-gray-400">Teacher PANEL</h2>
+                    <h2 class="mt-4 text-lg text-center font-bold text-gray-400">Teacher PANEL</h2>
                 </div>
-                <nav class="mt-6">
-                    <button id="dashboard-tab" class="tab-button block w-full text-left px-6 py-3 hover:bg-purple-100 text-gray-800 text-xs" onclick="displayContent('dashboard', 'dashboard-tab')">
+                <nav class="mt-2">
+                    <button id="dashboard-tab" class="tab-button block w-full text-left px-6 py-3 m-2 rounded-l-xl hover:bg-purple-100 text-gray-800 text-sm" onclick="displayContent('dashboard', 'dashboard-tab')">
                         <i class="ri-home-2-line mr-3 text-lg"></i>View Student Information
                     </button>
-                    <button id="attendance-tab" class="tab-button block w-full text-left px-6 py-3 hover:bg-purple-100 text-gray-800 text-xs" onclick="displayContent('attendance', 'attendance-tab')">
+                    <button id="attendance-tab" class="tab-button block w-full text-left px-6 py-3 m-2 rounded-l-xl hover:bg-purple-100 text-gray-800 text-sm" onclick="displayContent('attendance', 'attendance-tab')">
                         <i class="ri-user-line mr-3 text-lg"></i>Manage Class Attendance
                     </button>
-                    <button id="teachers-tab" class="tab-button block w-full text-left px-6 py-3 hover:bg-purple-100 text-gray-800 text-xs" onclick="displayContent('teachers', 'teachers-tab')">
+                    <button id="teachers-tab" class="tab-button block w-full text-left px-6 py-3 m-2 rounded-l-xl hover:bg-purple-100 text-gray-800 text-sm" onclick="displayContent('teachers', 'teachers-tab')">
                         <i class="ri-user-2-line mr-3 text-lg"></i>View and Enter Grades
                     </button>
-                    <button id="subjects-tab" class="tab-button block w-full text-left px-6 py-3 hover:bg-purple-100 text-gray-800 text-xs" onclick="displayContent('subjects', 'subjects-tab')">
+                    <button id="subjects-tab" class="tab-button block w-full text-left px-6 py-3 m-2 rounded-l-xl hover:bg-purple-100 text-gray-800 text-sm" onclick="displayContent('subjects', 'subjects-tab')">
                         <i class="ri-book-line mr-3 text-lg"></i>Review Student Performance
                     </button>
                 </nav>
@@ -177,8 +177,8 @@
                             <path d="M5 5h5V3H3v7h2zm5 14H5v-5H3v7h7zm11-5h-2v5h-5v2h7zm-2-4h2V3h-7v2h5z"></path>
                             </svg>
                         </button>
-                        <button class="px-4 py-2 bg-red-100 rounded hover:bg-red-400" onclick="logout()">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" class="hover:bg-red-400 rounded-full" viewBox="0 0 24 24" style="fill: gray">
+                        <button class="px-4 py-2 bg-purple-100 rounded hover:bg-purple-200" onclick="logout()">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" class="hover:bg-purple-200 rounded-full" viewBox="0 0 24 24" style="fill: gray">
                             <path d="M14 7l-1.41 1.41L16.17 12H8v2h8.17l-3.59 3.59L14 17l5-5-5-5zM19 3h-8c-1.1 0-2 .9-2 2v3h2V5h8v14h-8v-3h-2v3c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"></path>
                             </svg>
                         </button>
@@ -186,26 +186,26 @@
                 </div>
 
                 <!-- Dynamic Content -->
-                <div class="flex-1 overflow-y-auto p-6 bg-gray-200">
+                <div class="flex-1 overflow-y-auto p-6 bg-[url('./resources/images/wallpapers/bg.png')] bg-cover bg-center">
                     <!-- Dashboard Content -->
                     <div id="dashboard" class="dynamic-content">
-                        <h2 class="text-2xl font-bold text-gray-800">View Student Information</h2>
+                        <h2 class="text-4xl text-center font-bold text-gray-800">View Student Information</h2>
                         <div class="p-8">
                             <h1 class="text-3xl font-semibold mb-6">Registered Classes</h1>
 
                             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                                 <% for (ClassModel classModel : classes) {%>
-                                <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+                                <div class="bg-white shadow-xl rounded-lg overflow-hidden">
                                     <div class="p-6">
                                         <h2 class="text-xl font-semibold mb-2"><%= classModel.getClassName()%></h2>
                                         <p class="text-gray-600">Year: <%= classModel.getYear()%></p>
                                     </div>
-                                    <div class="px-6 py-4 bg-gray-50 text-center">
+                                    <div class="px-6 py-4 bg-gray-100  text-center">
                                         <!-- Button to fetch student data -->
                                         <button 
                                             id="viewStudentsBtn" 
                                             data-class-id="<%= classModel.getClassId()%>" 
-                                            class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
+                                            class="bg-purple-600 text-white py-2 px-4 rounded hover:bg-purple-700"
                                             onclick="fetchStudentInfo(<%= classModel.getClassId()%>)">
                                             View Students
                                         </button>
@@ -230,7 +230,7 @@
                                         />
                                     <button
                                         onclick="filterStudentsByName()"
-                                        class="bg-cyan-600 text-white px-4 py-2 rounded-lg hover:bg-cyan-700 focus:ring-2 focus:ring-cyan-500 focus:outline-none"
+                                        class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-cyan-500 focus:outline-none"
                                         >
                                         Filter
                                     </button>
@@ -286,13 +286,13 @@
             `;
                                     table.appendChild(thead);
 
-                                    // Create the table body
+                                    // Create the table body 
                                     const tbody = document.createElement('tbody');
 
                                     // Loop through students and add each to the table
                                     students.forEach(student => {
                                         const tr = document.createElement('tr');
-                                        tr.classList.add('hover:bg-gray-50');
+                                        tr.classList.add(' bg-gray-50 hover:bg-gray-100');
 
                                         tr.innerHTML = `
                     <td class="px-4 py-2 border-b text-cyan-600">\${student.name}</td>
@@ -307,7 +307,7 @@
                                     table.appendChild(tbody);
                                     studentsContainer.appendChild(table);
                                 } else {
-                                    studentsContainer.innerHTML = '<p class="text-gray-500">No students found for this class.</p>';
+                                    studentsContainer.innerHTML = '<p class="text-red-500">No students found for this class.</p>';
                                 }
                             }
 
@@ -327,7 +327,7 @@
                                 if (filteredStudents.length > 0) {
                                     displayStudents(filteredStudents);
                                 } else {
-                                    document.getElementById('Student-Records').innerHTML = '<p class="text-gray-500">No student found with the given name.</p>';
+                                    document.getElementById('Student-Records').innerHTML = '<p class="text-red-500">No student found with the given name.</p>';
                                 }
                             }
 
@@ -388,10 +388,10 @@
                                         const tr = document.createElement('tr');
                                         tr.id = `student-\${student.userId}`; // Add a unique ID for each row to highlight it
                                         tr.innerHTML = `
-                    <td class="px-4 py-2 border-b text-cyan-600">\${student.name}</td>
+                    <td class=" bg-white px-4 py-2 border-b text-cyan-600">\${student.name}</td>
                     <td class="px-4 py-2 border-b">
-                        <button id="present-\${student.userId}" class="bg-green-500 text-white px-4 py-2 rounded" onclick="markAttendanceForStudent('\${student.userId}', 'Present')">Present</button>
-                        <button id="absent-\${student.userId}" class="bg-red-500 text-white px-4 py-2 rounded" onclick="markAttendanceForStudent('\${student.userId}', 'Absent')">Absent</button>
+                        <button id="present-\${student.userId}" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600" onclick="markAttendanceForStudent('\${student.userId}', 'Present')">Present</button>
+                        <button id="absent-\${student.userId}" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600" onclick="markAttendanceForStudent('\${student.userId}', 'Absent')">Absent</button>
                     </td>
                 `;
                                         tbody.appendChild(tr);
@@ -517,7 +517,7 @@
                                 if (students.length > 0) {
                                     // Create a table element
                                     const table = document.createElement('table');
-                                    table.classList.add('min-w-full', 'table-auto', 'border-collapse', 'shadow-md', 'border', 'border-gray-200');
+                                    table.classList.add('min-w-full', 'table-auto', 'border-collapse', 'shadow-md', 'border','bg-white','bg-opacity-80', 'border-gray-200');
 
                                     // Create the table header
                                     const thead = document.createElement('thead');
@@ -592,7 +592,7 @@
                                 if (results.length > 0) {
                                     // Create a table
                                     const table = document.createElement('table');
-                                    table.classList.add('min-w-full', 'table-auto', 'border-collapse', 'shadow-md', 'border', 'border-gray-200');
+                                    table.classList.add('min-w-full', 'table-auto', 'border-collapse', 'shadow-md', 'border', 'bg-white','bg-opacity-80', 'border-gray-200');
 
                                     // Table header
                                     table.innerHTML = `
@@ -667,7 +667,7 @@
 
                                 // Create table for subjects and marks
                                 let table = document.createElement('table');
-                                table.classList.add('min-w-full', 'mt-6', 'border-collapse', 'table-auto');
+                                table.classList.add('min-w-full', 'mt-6', 'border-collapse', 'bg-white', 'bg-opacity-80', 'table-auto');
 
                                 let header = table.createTHead();
                                 let headerRow = header.insertRow();
@@ -833,7 +833,7 @@
                                 for (const [semester, subjects] of Object.entries(semesterGroups)) {
                                     // Create a section for the semester
                                     const semesterSection = document.createElement('div');
-                                    semesterSection.classList.add('semester-section', 'mb-6', 'bg-white', 'shadow', 'rounded', 'p-4');
+                                    semesterSection.classList.add('semester-section', 'mb-6', 'bg-white', 'bg-opacity-80', 'shadow', 'rounded', 'p-4');
 
                                     // Add a title for the semester
                                     const semesterTitle = document.createElement('h3');
@@ -904,10 +904,10 @@
 
                     <!-- Students Content -->
                     <div id="attendance" class="dynamic-content" style="display: none;">
-                        <h2 class="text-2xl font-bold text-gray-800">Manage Class Attendance</h2>
-                        <p class="mt-4 text-gray-600">Attendance of students.</p>
+                        <h2 class="text-4xl text-center font-bold text-gray-800">Manage Class Attendance</h2>
+                        <p class="mt-4 text-center text-gray-600">Attendance of students</p>
                         <div class="mt-6 max-w-sm bg-white p-6 rounded-xl shadow-lg">
-                            <h3 class="text-xl font-semibold text-gray-800">User Details</h3>
+                            <h3 class="text-xl text-center font-semibold text-gray-800">User Details</h3>
 
                             <!-- User details inside card -->
                             <div class="mt-4">
@@ -939,7 +939,7 @@
                     </div>
 
                     <div id="teachers" class="dynamic-content" style="display: none;">
-                        <h2 class="text-2xl font-bold text-gray-800">View and Enter Grades</h2>
+                        <h2 class="text-4xl text-center font-bold text-gray-800">View and Enter Grades</h2>
                         <div class="p-8">
                             <h1 class="text-3xl font-semibold mb-6">Registered Classes</h1>
 
@@ -954,7 +954,7 @@
                                         <button 
                                             data-class-id="<%= classModel.getClassId()%>" 
                                             data-class-year="<%= classModel.getYear()%>"
-                                            class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
+                                            class="bg-purple-600 text-white py-2 px-4 rounded hover:bg-purple-700"
                                             onclick="fetchStudentInfo_2('<%= classModel.getClassId()%>', '<%= classModel.getYear()%>', '<%= classModel.getClassName()%>')">
                                             View Students
                                         </button>
@@ -968,7 +968,7 @@
                     </div>
 
                     <div id="subjects" class="dynamic-content" style="display: none;">
-                        <h2 class="text-2xl font-bold text-gray-800">Review Student Performance</h2>
+                        <h2 class="text-4xl text-center font-bold text-gray-800">Review Student Performance</h2>
                         <div class="p-8">
                             <h1 class="text-3xl font-semibold mb-6">Registered Classes</h1>
 
@@ -983,7 +983,7 @@
                                         <button 
                                             data-class-id="<%= classModel.getClassId()%>" 
                                             data-class-year="<%= classModel.getYear()%>"
-                                            class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
+                                            class="bg-purple-600 text-white py-2 px-4 rounded hover:bg-purple-700"
                                             onclick="fetchStudentResultByClass('<%= classModel.getClassId()%>', '<%= classModel.getYear()%>', '<%= classModel.getClassName()%>')">
                                             View Class Academic Performance 
                                         </button>
