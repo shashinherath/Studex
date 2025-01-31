@@ -67,11 +67,11 @@
         <div
             class="fixed left-0 top-0 w-64 h-full bg-white p-4 z-50 sidebar-menu transition-transform"
             >
-            <a href="admin-home.jsp" class="flex items-center pb-4">
+            <a href="admin-home.jsp" class="flex items-center pb-2">
                 <img src="./resources/images/logo/logoStudex.png" class="h-12 w-auto" />
             </a>
             <ul class="mt-4">
-                <span class="text-gray-500 font-bold">ADMIN PANEL</span>
+                <span class="text-gray-500 text-center font-bold">ADMIN PANEL</span>
                 <li class="mt-4 mb-2 group">
                     <a
                         href="/Studex/admin-home.jsp"

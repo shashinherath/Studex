@@ -111,7 +111,7 @@
             function displayProfileInfo(profile) {
                 const profileContainer = document.getElementById('students-profile-info');
                 profileContainer.innerHTML = `
-            <div class="bg-white p-6 rounded-lg shadow-lg max-w-md mx-auto">
+            <div class="bg-white p-6 rounded-lg shadow-lg max-w-md mx-auto bg-opacity-80">
                 <h2 class="text-2xl text-center font-semibold text-gray-800 mb-4">Profile Information</h2>
                 <div class="space-y-4">
                     <p class="text-gray-700"><strong class="font-large">Name:</strong> \${profile.name}</p>
@@ -158,7 +158,7 @@
                 }, {});
                 // Construct the HTML structure to display grouped grades
                 let gradesHtml = `
-        <div class="bg-white p-6 rounded-lg shadow-lg max-w-4xl mx-auto">
+        <div class="bg-white p-6 rounded-lg shadow-lg max-w-4xl mx-auto bg-opacity-80">
             <h2 class="text-2xl font-semibold text-gray-800 text-center mb-4">Your Academic Grades</h2>
     `;
                 // Loop through each year-semester group
@@ -206,7 +206,7 @@
 
                 // Create the form structure dynamically with Tailwind styling
                 formContainer.innerHTML = `
-        <div class="max-w-sm w-full mx-auto bg-white p-6 rounded-lg shadow-lg">
+        <div class="max-w-sm w-full mx-auto bg-white p-6 rounded-lg shadow-lg bg-opacity-80">
             <h2 class="text-2xl font-semibold text-center mb-4 text-gray-700">Change Password</h2>
             <form id="changePasswordForm">
                 <div class="mb-4">
@@ -219,7 +219,7 @@
                     <input type="password" id="confirmPassword" name="confirmPassword" required class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                 </div>
 
-                <button type="button" id="submitPasswordChange" class="w-full bg-purple-500 text-white py-2 rounded-md hover:bg-purple-600 focus:outline-none focus:ring-2 focus:ring-blue-500">Change Password</button>
+                <button type="button" id="submitPasswordChange" class="w-full bg-purple-600 text-white py-2 rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-blue-500">Change Password</button>
             </form>
 
             <div id="statusMessage" class="mt-4 text-center"></div> <!-- Status message container -->
@@ -293,9 +293,9 @@
                     <a href="teacher-home.jsp" class="flex items-center pb-2 ">
                         <img src="./resources/images/logo/logoStudex.png" class="h-12 w-auto" />
                     </a>
-                    <h2 class="mt-4 text-lg font-bold text-gray-400">Student PANEL</h2>
+                    <h2 class="mt-4 text-lg font-bold text-center text-gray-400">Student PANEL</h2>
                 </div>
-                <nav class="mt-6">
+                <nav class="mt-2">
                     <button id="profile-tab" class="tab-button block w-full text-left px-6 py-4 m-2 rounded-l-xl hover:bg-purple-100 text-gray-800 text-md" onclick="displayContent('profile', 'profile-tab');
                             loadProfileInfo(<%= userID%>);">
                         <i class="ri-home-2-line mr-3 text-lg"></i>My Profile Info
@@ -335,7 +335,7 @@
                 </div>
 
                 <!-- Dynamic Content -->
-                <div class="flex-1 overflow-y-auto p-6 bg-[url('./resources/images/wallpapers/bg.jpg')] bg-cover bg-center">
+                <div class="flex-1 overflow-y-auto p-6 bg-[url('./resources/images/wallpapers/bg.png')] bg-cover bg-center">
                     <!-- Dashboard Content -->
                     <div id="profile" class="dynamic-content">
                         <h2 class="text-2xl font-bold text-gray-800">My Profile Info</h2>
